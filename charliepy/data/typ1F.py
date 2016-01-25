@@ -19,7 +19,7 @@ def cartanmat(n):
 
 def diagram(inds):
     """Prints the Dynkin diagram."""
-    print("F4 {} - {} > {} - {}".format(*inds))
+    print("F4 :  {} - {} > {} - {}".format(*inds))
     return None
 
 def degrees(n):

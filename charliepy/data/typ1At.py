@@ -7,7 +7,7 @@ from . import typ1A
 import numpy as np
 
 def cartanmat(n):
-    """Takes a zero matrix and returns the type A_n Cartan matrix as a
+    """Takes a zero matrix and returns the type A~_n Cartan matrix as a
     NumPy array."""
     if n == 2:
         return np.array([[2, -2], [-2, 2]], dtype = 'int8')

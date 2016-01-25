@@ -20,7 +20,7 @@ def cartanmat(n):
 
 def diagram(inds):
     """Prints the Dynkin diagram."""
-    print("G2 {} < {}".format(*inds))
+    print("G2 :  {} < {}".format(*inds))
     return None
 
 def degrees(n):

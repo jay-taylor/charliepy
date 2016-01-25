@@ -25,7 +25,7 @@ def cartanmat(n):
 
 def diagram(inds):
     """Prints the Dynkin diagram."""
-    out = "B{} ".format(len(inds))
+    out = "B{} :  ".format(len(inds))
     out += " - ".join(str(x) for x in inds[:-1])
     out += " > {}".format(inds[-1])
     print(out)

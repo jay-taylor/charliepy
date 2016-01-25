@@ -1,5 +1,23 @@
 ####################################################################
 # Data for type E~_n Coxeter groups
+# The Dynkin diagrams here follow Bourbaki so we have
+#
+#                1   3   4   5   6
+#         E~_6   o---o---o---o---o
+#                        |
+#                        o 2
+#                        |
+#                        o 0
+#
+#                0   1   3   4   5   6   7
+#         E~_7   o---o---o---o---o---o---o
+#                            |
+#                            o 2
+#
+#                1   3   4   5   6   7   8   0
+#         E~_8   o---o---o---o---o---o---o---o
+#                        |
+#                        o 2
 #
 
 import numpy as np

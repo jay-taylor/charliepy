@@ -114,6 +114,34 @@ class CoxeterGroup:
         return functools.reduce(operator.mul, self.degrees)
 
     def __eq__(self, other):
+        """
+        Two CoxeterGroup instances are considered to be equal if they
+        have exactly the same irreducible factors with the same
+        labelling of the simple roots. The ordering of these factors
+        does not matter.
+
+        Notes
+        -----
+        This function does not test whether the groups are isomorphic!
+        For instance, this function will return False when comparing 
+
+
+        Example
+        -------
+        >>> W = clp.CoxeterGroup("A", [0, 1, 2], "B", [3, 4, 5])
+        >>> G = clp.CoxeterGroup("B", [3, 4, 5], "A", [0, 1, 2])
+        >>> W
+        CoxeterGroup('A',3,'B',3)
+        >>> G
+        CoxeterGroup('B',3,'A',3)
+        >>> W == G
+        True
+        >>> G = clp.CoxeterGroup("A", [3, 4, 5], "B", [0, 1, 2])
+        >>> W == G
+        False
+
+
+        """
         return (isinstance(other, CoxeterGroup)
                 and self.__name__ == other.__name__)
 

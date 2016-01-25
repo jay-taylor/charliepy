@@ -46,13 +46,13 @@ def diagram(inds):
     """Prints the Dynkin diagram."""
     n = len(inds)
     if n == 2:
-        print("D2 {} - {}".format(inds))
+        print("D2 :  {}   {}".format(*inds))
         return None
     elif n == 3:
-        print("D3 {} - {} -- {}".format(inds[1], inds[0], inds[2]))
+        print("D3 :  {} - {} - {}".format(inds[1], inds[0], inds[2]))
         return None
 
-    out3 = "D{} ".format(len(inds))
+    out3 = "D{} :  ".format(len(inds))
     out3 += " - ".join(str(x) for x in inds[:-2])
     out2 = " "*len(out3) + " /"
     out4 = " "*len(out3) + " \\"

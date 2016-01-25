@@ -130,17 +130,21 @@ def cartanmat(*args, **kwargs):
     returns a tuple containing: the Cartan matrix, the Cartan type of
     the matrix and the indices of the nonreduced parts of the matrix.
 
-    The Dynkin diagrams of the finite reduced crystallographic Cartan
-    matrices are as follows:
+    Notes
+    -----
+    The Cartan matrices are as in [Bou02]. In particular, the Dynkin
+    diagrams of the finite reduced crystallographic Cartan matrices are
+    as follows:
 
          0   1   2        n-1          0   1            n-1
     An   o---o---o-- ... --o      Bn   o---o-- ... --o=>=o
+    (n>0)                         (n>0)
 
-                          o n-2
-         0        n-4   /               0   1            n-1
-    Dn   o-- ... --o---o n-3       Cn   o---o-- ... --o=<=o
-                        \
-                          o n-1
+                                                       o n-2
+         0   1            n-1          0        n-4   /     
+    Cn   o---o-- ... --o=<=o      Dn   o-- ... --o---o n-3  
+    (n>0)                         (n>1)               \     
+                                                       o n-1
 
          0   1           0   1   2   3          0   2   3   4   5
     G2   o-<-o       F4  o---o=>=o---o      E6  o---o---o---o---o
@@ -156,25 +160,36 @@ def cartanmat(*args, **kwargs):
     crystallographic Cartan matrix is given by:
 
                         0   1          n-1  n
-                   BCn  o=<=o--- ... ---o=<=o
-
-    The Dynkin diagrams of the finite non crystallographic Cartan
-    matrices are:
-
-              0   1          0   1   2         0   1   2   3
-     I2(m)    o->-o      H3  o---o---o     H4  o---o---o---o
-                m              5                 5           
+                   BCn  o=>=o--- ... ---o=>=o
 
     The Dynkin diagrams of the affine Cartan matrices are:
 
-          1   2       n-1  n                                    o n
-     A~n  o---o-- ...--o---o             1   2   3        n-1 /
-           \      0       /         B~n  o=<=o---o-- ... --o 
-             -----o------                                     \ 
-                                                                 o 0
+          1   2       n-1  n           1 o
+    A~n   o---o-- ...--o---o              \    3        n-1  n
+    (n>1)  \      0       /      B~n     2 o---o-- ... --o=>=o
+             -----o------        (n>2)    /
+                                       0 o
     
-    C~n  o=>=o
-    
+                                       1 o                     o n-1
+          0   1        n-1  n             \    3        n-3   /
+    C~n   o=>=o-- ... --o=<=o    D~n     2 o---o-- ... --o---o n-2
+    (n>1)                        (n>3)    /                   \ 
+                                       0 o                     o n
+
+          0   2   1           1   2   0           0   1   2   3   4
+    B~2   o=>=o=<=o     G~2   o-<-o---o     F~4   o---o---o=>=o---o
+                                6
+
+          1   3   4   5   6          0   1   3   4   5   6   7
+    E~6   o---o---o---o---o    E~7   o---o---o---o---o---o---o
+                  |                              |
+                  o 2                            o 2
+                  |
+                  o 0                1   3   4   5   6   7   8   0
+                               E~8   o---o---o---o---o---o---o---o
+                                             |
+                                             o 2
+
     """
     rank = 0
     pairs = []

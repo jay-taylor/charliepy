@@ -56,9 +56,9 @@ def cartanmat(n):
 def diagram(inds):
     """Prints the Dynkin diagram."""
     sinds = list(map(str, inds))
-    out1 = "E{} {} - {} - ".format(len(inds), sinds[0], sinds[2])
+    out1 = "E{} :  {} - {} - ".format(len(inds), sinds[0], sinds[2])
     out1 += " - ".join(sinds[3:])
-    out2 = "   " + " "*(6 + len(sinds[0]) + len(sinds[2]))
+    out2 = "      " + " "*(6 + len(sinds[0]) + len(sinds[2]))
 
     print(out1, out2 + "|", out2 + sinds[1], sep="\n")
     return None

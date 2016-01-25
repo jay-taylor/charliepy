@@ -13,11 +13,11 @@ if __USE_C__:
 import numpy as np
 from collections import OrderedDict
 
-def cartanmat(n):
+def cartanmat(n, **kwargs):
     """Takes a zero matrix and returns the type A_n Cartan matrix as a
     NumPy array."""
     if n < 0:
-        raise ValueError("Rank of A_n must be positive!")
+        raise ValueError("Rank must be positive!")
     elif n == 0:
         return np.array([], dtype = 'int8')
     elif n == 1:
@@ -31,7 +31,7 @@ def cartanmat(n):
 
 def diagram(inds):
     """Prints the Dynkin diagram."""
-    print("A{} ".format(len(inds)) + " - ".join(str(x) for x in inds))
+    print("A{} :  ".format(len(inds)) + " - ".join(str(x) for x in inds))
     return None
 
 def degrees(n):
