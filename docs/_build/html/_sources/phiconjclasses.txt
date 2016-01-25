@@ -1,0 +1,33 @@
+.. include:: global.rst
+.. currentmodule:: pycox.coxcos
+
+:math:`\phi`-Conjugacy Classes
+==============================
+
+Let us recall that the automorphism `\phi` induces a natural equivalence
+relation on the group `W`, which we call `\phi`-conjugacy. In
+particular, we say two elements `x,y \in W` are `\phi`-conjugate
+if there exists an element `z \in W` such that
+
+.. math:: x = z^{-1}y\phi(z).
+
+The equivalence classes under this relation are known as the
+`\phi`-conjugacy classes of `W`.
+
+.. admonition:: Definition
+
+    We say `C \subset W\phi` is a `\phi`-conjugacy class if any
+    one of the following equivalent conditions is satisfied:
+
+    * `C` is a `W`-orbit under the natural conjugation action of `W` on
+      `W\phi`.
+    * `C` is a conjugacy class of `\widetilde{W}` contained in the
+      coset `W\phi`.
+    * the set `\{w \in W \mid (w, \phi) \in C\}` is a `\phi`-conjugacy
+      class of `W`.
+
+The following function will produce the `\phi`-conjugacy classes of any
+Coxeter coset.
+
+.. autofunction:: conjugacyclasses
+

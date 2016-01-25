@@ -1,0 +1,15 @@
+# Compiled source #
+###################
+*.o
+*.so
+*.pyo
+*.pyc
+
+# Logs and databases #
+######################
+*.log
+
+# Old PyCox code #
+##################
+# This isn't needed in CharLiePy.
+pycox-old/

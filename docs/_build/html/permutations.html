@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Permutations &mdash; PyCox 1.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pycox.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="top" title="PyCox 1.6.2 documentation" href="index.html" />
+    <link rel="up" title="General Algebra" href="algebra.html" />
+    <link rel="next" title="References" href="bib.html" />
+    <link rel="prev" title="General Algebra" href="algebra.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bib.html" title="References"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="algebra.html" title="General Algebra"
+             accesskey="P">previous</a> |</li>
+<li>
+    <a href="index.html">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+
+          <li><a href="algebra.html" accesskey="U">General Algebra</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-pycox.permutat"></span><div class="section" id="permutations">
+<h1>Permutations<a class="headerlink" href="#permutations" title="Permalink to this headline">¶</a></h1>
+<p>In PyCox a permutation is always considered to be a bijective function from the
+set of integers <span class="math">\(\{0,1,\dots,n-1\}\)</span> to itself, for some integer <span class="math">\(n \geqslant 0\)</span>.
+Such a bijective function <span class="math">\(f\)</span> is implemented as a list of integers <tt class="docutils literal"><span class="pre">L</span></tt> such
+that <tt class="docutils literal"><span class="pre">L[i]</span></tt> is simply <span class="math">\(f(i)\)</span> for any <span class="math">\(i \in \{0,\dots,n-1\}\)</span>. However it is
+typically represented by its decomposition as a product of disjoint cycles.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In mathematics it is typical to consider permutations as bijective functions
+on the set <span class="math">\(\{1,\dots,n\}\)</span>, however this is not practical in Python due to
+its indexing conventions. To obtain such functions one may simply set the
+permutation to fix 0.</p>
+</div>
+<p>Our implementation of permutations is very similar to the implementation of
+permutations in <a class="reference external" href="http://www.gap-system.org/">GAP</a>. Indeed, many of the functions we consider below also have
+analogues in GAP. However, we note the following major difference between our
+permutations and those of GAP.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If <span class="math">\(f\)</span> and <span class="math">\(g\)</span> are permutations then the composition <span class="math">\(f\circ g\)</span> is read from
+<strong>right to left</strong>. In other words <span class="math">\((f\circ g)(i) = f(g(i))\)</span> for all <span class="math">\(i\)</span>.
+See also <tt class="docutils literal"><span class="pre">pcx.permutat.perm.__mul__</span></tt> for more details.</p>
+</div>
+<p>Permutations are implemented through the following Python class.</p>
+<dl class="class">
+<dt id="pycox.permutat.perm">
+<em class="property">class </em><tt class="descclassname">pycox.permutat.</tt><tt class="descname">perm</tt><big>(</big><em>perm</em><big>)</big><a class="headerlink" href="#pycox.permutat.perm" title="Permalink to this definition">¶</a></dt>
+<dd><p>A permutation on the integers <span class="math">\(\{0,\dots,n-1\}\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>perm</strong> : list</p>
+<blockquote class="last">
+<div><p>The entry of <tt class="docutils literal"><span class="pre">perm[i]</span></tt> should give the image of <tt class="docutils literal"><span class="pre">i</span></tt> under
+the permutation.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>To create more efficient memory management, it is assumed that the
+degree of a permutation does not exceed 2<sup>16</sup>. This should be
+more than sufficient for the purposes we treat in PyCox. If for some
+reason one needs to consider permutations of larger degree then one
+can change the global attribute <tt class="docutils literal"><span class="pre">bitsize</span></tt>. For example, setting:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">bitsize</span> <span class="o">=</span> <span class="s">&quot;32&quot;</span>
+</pre></div>
+</div>
+<p>will allow permutations of degree up to 2<sup>32</sup>.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">perm</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">(0, 6)(1, 5)(2, 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">deg</span>
+<span class="go">7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">perm</span>
+<span class="go">array([6, 5, 4, 3, 2, 1, 0], dtype=uint16)</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="15%" />
+<col width="80%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>perm</td>
+<td>numpy array</td>
+<td>Stores the input perm as a numpy array.</td>
+</tr>
+<tr class="row-even"><td>deg</td>
+<td>int</td>
+<td>If the permutation is on <span class="math">\(\{0,\dots,n-1\}\)</span> then this is <span class="math">\(n\)</span>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="cycles">
+<h2>Cycles<a class="headerlink" href="#cycles" title="Permalink to this headline">¶</a></h2>
+<p>When dealing with permutations, two-row notation is often not very user
+friendly. It can also be very inefficient when dealing with permutations
+consisting of many fixed points. Thus one normally writes a permutation as a
+product of disjoint cycles. The following functions allow one to produce the
+cycle decomposition of a permutation and to also produce permutations from a
+cycle decomposition (amongst other things).</p>
+<dl class="function">
+<dt id="pycox.permutat.cycledecomp">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">cycledecomp</tt><big>(</big><em>w</em><big>)</big><a class="headerlink" href="#pycox.permutat.cycledecomp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the decomposition of a permutation as a product of
+disjoint cycles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : tuple of tuples</p>
+<blockquote class="last">
+<div><p>Each entry of <tt class="docutils literal"><span class="pre">out</span></tt> is a tuple describing a cycle in the cycle
+decomposition of the permutation.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This is similar to <tt class="docutils literal"><span class="pre">cycles(w)</span></tt> except cycles of length 1 are
+ignored.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycledecomp</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">((1, 2, 3), (4, 5), (7, 9, 8))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycles</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">((0,), (1, 2, 3), (4, 5), (6,), (7, 9, 8))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pycox.permutat.cyclestoperm">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">cyclestoperm</tt><big>(</big><em>*cycles</em><big>)</big><a class="headerlink" href="#pycox.permutat.cyclestoperm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a permutation from a product of <em>disjoint</em> cycles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>cycles</strong> : list of lists</p>
+<blockquote>
+<div><p>Each entry of cycles should be a list like object describing a
+cycle.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-class docutils literal"><span class="pre">perm</span></tt></a></p>
+<blockquote class="last">
+<div><p>A permutation whose cycle decomposition is given by cycles.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>This function cannot accept cycles which are not disjoint.</li>
+<li>One can force the degree of the resulting permutation to be as
+large as one likes by adding trivial cycles.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">(0, 2, 1)(3, 8, 5)(6, 7)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">deg</span>
+<span class="go">9</span>
+</pre></div>
+</div>
+<p>By adding a trivial cycle we may now change the degree of the
+resulting permutation.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">q</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span>
+<span class="go">(0, 2, 1)(3, 8, 5)(6, 7)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">deg</span>
+<span class="go">21</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pycox.permutat.cycle">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">cycle</tt><big>(</big><em>w</em>, <em>i</em><big>)</big><a class="headerlink" href="#pycox.permutat.cycle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cycle of w containing the point i.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>The cycle will always begin with the smallest entry.</li>
+<li>The function modifies the variable <tt class="docutils literal"><span class="pre">i</span></tt>.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(1, 3, 2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pycox.permutat.cycles">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">cycles</tt><big>(</big><em>w</em>, <em>L=None</em><big>)</big><a class="headerlink" href="#pycox.permutat.cycles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the cycles of <tt class="docutils literal"><span class="pre">w</span></tt> acting on the entries in <tt class="docutils literal"><span class="pre">L</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>w</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-class docutils literal"><span class="pre">perm</span></tt></a></p>
+<p><strong>L</strong> : iterable, optional</p>
+<blockquote>
+<div><p>The entries of <tt class="docutils literal"><span class="pre">L</span></tt> must form a subset of <tt class="docutils literal"><span class="pre">range(w.deg)</span></tt> such
+that <tt class="docutils literal"><span class="pre">w</span></tt> restricted to <tt class="docutils literal"><span class="pre">L</span></tt> is a permutation on <tt class="docutils literal"><span class="pre">L</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : tuple of tuples</p>
+<blockquote class="last">
+<div><p>Each entry of <tt class="docutils literal"><span class="pre">out</span></tt> is a tuple describing a cycle of <tt class="docutils literal"><span class="pre">w</span></tt>
+acting on <tt class="docutils literal"><span class="pre">L</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>If <tt class="docutils literal"><span class="pre">L</span></tt> is not specified then <tt class="docutils literal"><span class="pre">xrange(w.deg)</span></tt> is used and
+the function returns almost the same as <a class="reference internal" href="#pycox.permutat.cycledecomp" title="pycox.permutat.cycledecomp"><tt class="xref py py-func docutils literal"><span class="pre">cycledecomp</span></tt></a>,
+however the ouput of <tt class="docutils literal"><span class="pre">cycles</span></tt> includes trivial cycles of
+length 1.</li>
+<li>The ordering of the cycles depends upon the ordering of <tt class="docutils literal"><span class="pre">L</span></tt>.
+However, each cycle will start with the smallest entry.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycles</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="go">((4, 5), (6,), (7, 8, 9))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycles</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">xrange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">)))</span>
+<span class="go">((7, 8, 9), (6,), (4, 5))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pycox.permutat.cycletype">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">cycletype</tt><big>(</big><em>w</em>, <em>part=False</em><big>)</big><a class="headerlink" href="#pycox.permutat.cycletype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cycletype of a permutation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>w</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-func docutils literal"><span class="pre">perm</span></tt></a></p>
+<p><strong>part</strong> : bool, optional</p>
+<blockquote>
+<div><p>If <tt class="docutils literal"><span class="pre">True</span></tt> then the function returns a list whose entries
+consist of the lengths of the cycles in the cycle decomposition
+of <tt class="docutils literal"><span class="pre">w</span></tt>. This is naturally a partition of <tt class="docutils literal"><span class="pre">w.deg</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : list of ints</p>
+<blockquote class="last">
+<div><p>For any <tt class="docutils literal"><span class="pre">i</span> <span class="pre">in</span> <span class="pre">range(1,</span> <span class="pre">w.deg+1)</span></tt> we have <tt class="docutils literal"><span class="pre">out[i]</span></tt> is the
+number of cycles of length <tt class="docutils literal"><span class="pre">i</span></tt> occurring in the cycle
+decomposition of <tt class="docutils literal"><span class="pre">w</span></tt>. As a convention we set <tt class="docutils literal"><span class="pre">out[0]</span> <span class="pre">=</span> <span class="pre">0</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>If <tt class="docutils literal"><span class="pre">part</span></tt> is set to <tt class="docutils literal"><span class="pre">True</span></tt> then the resulting list is sorted and
+weakly decreasing.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycletype</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">[0, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycletype</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">part</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[3, 3, 2, 1, 1]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycletype</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">[0, 0, 0, 0, 0, 0, 0, 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cycletype</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">part</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[7]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="induced-permutations">
+<h2>Induced Permutations<a class="headerlink" href="#induced-permutations" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pycox.permutat.permonsets">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">permonsets</tt><big>(</big><em>S</em>, <em>w</em><big>)</big><a class="headerlink" href="#pycox.permutat.permonsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the permutation induced on a collection of sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>S</strong> : list</p>
+<blockquote>
+<div><p>Each set in the list should be preserved by the permutation w.</p>
+</div></blockquote>
+<p><strong>w</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-class docutils literal"><span class="pre">perm</span></tt></a></p>
+<blockquote>
+<div><p>A permutation inducing a permutation of the sets in S.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-class docutils literal"><span class="pre">perm</span></tt></a></p>
+<blockquote class="last">
+<div><p>The permutation on the entries in S induced by w.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">perm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span>
+<span class="go">(0, 8)(1, 7)(2, 6)(3, 5)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="nb">set</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="nb">set</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">])]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">permonsets</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="go">(0, 2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pycox.permutat.restrictedperm">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">restrictedperm</tt><big>(</big><em>w</em>, <em>L</em><big>)</big><a class="headerlink" href="#pycox.permutat.restrictedperm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives a permutation obtained by restriction to a subset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>w</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-func docutils literal"><span class="pre">perm</span></tt></a></p>
+<p><strong>L</strong> : list of ints</p>
+<blockquote>
+<div><p>The entries of <tt class="docutils literal"><span class="pre">L</span></tt> must form a subset of <tt class="docutils literal"><span class="pre">range(w.deg)</span></tt> such
+that the restriction of <tt class="docutils literal"><span class="pre">w</span></tt> to <tt class="docutils literal"><span class="pre">L</span></tt> is a permutation on
+<tt class="docutils literal"><span class="pre">L</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : <a class="reference internal" href="#pycox.permutat.perm" title="pycox.permutat.perm"><tt class="xref py py-func docutils literal"><span class="pre">perm</span></tt></a></p>
+<blockquote class="last">
+<div><p>A permutation such that <tt class="docutils literal"><span class="pre">out[i]</span> <span class="pre">==</span> <span class="pre">w[i]</span></tt> for all <tt class="docutils literal"><span class="pre">i</span> <span class="pre">in</span> <span class="pre">L</span></tt>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The degree of the resulting permutation is determined by the largest
+entry in <tt class="docutils literal"><span class="pre">L</span></tt>.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">restrictedperm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="go">(1, 2, 3)(4, 5)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">restrictedperm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="go">(4, 5)(7, 9, 8)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">restrictedperm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span><span class="o">.</span><span class="n">deg</span> <span class="o">==</span>
+<span class="gp">... </span> <span class="n">pcx</span><span class="o">.</span><span class="n">permutat</span><span class="o">.</span><span class="n">restrictedperm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="miscellaneous">
+<h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pycox.permutat.orderperm">
+<tt class="descclassname">pycox.permutat.</tt><tt class="descname">orderperm</tt><big>(</big><em>w</em><big>)</big><a class="headerlink" href="#pycox.permutat.orderperm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the order of a permutation.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">cyclestoperm</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span>
+<span class="go">(0, 1, 2)(3, 4)(5, 6, 7)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orderperm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+<p class="logo"><a href="index.html">
+<img class="logo" src="_static/logo.png" alt="PyCox"/>
+</a></p>
+
+
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Permutations</a><ul>
+<li><a class="reference internal" href="#cycles">Cycles</a></li>
+<li><a class="reference internal" href="#induced-permutations">Induced Permutations</a></li>
+<li><a class="reference internal" href="#miscellaneous">Miscellaneous</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="algebra.html"
+                        title="previous chapter">General Algebra</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bib.html"
+                        title="next chapter">References</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/permutations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bib.html" title="References"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="algebra.html" title="General Algebra"
+             >previous</a> |</li>
+<li>
+    <a href="index.html">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+
+          <li><a href="algebra.html" >General Algebra</a> &raquo;</li> 
+      </ul>
+    </div>
+<div class="footer">
+<span class="left">
+
+Last updated on Apr 27, 2014.
+
+</span>
+<span class="right">
+    
+    &copy; Copyright 2014, Meinolf Geck.
+    
+
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+1.2.2.&nbsp;&nbsp;
+
+</span>
+</div>
+
+  </body>
+</html>

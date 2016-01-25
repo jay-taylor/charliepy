@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>\(\phi\)-Conjugacy Classes &mdash; PyCox 1.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pycox.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="top" title="PyCox 1.6.2 documentation" href="index.html" />
+    <link rel="up" title="Coxeter Cosets" href="cosets.html" />
+    <link rel="next" title="Data Book" href="databook/databook.html" />
+    <link rel="prev" title="Coxeter Cosets" href="cosets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="databook/databook.html" title="Data Book"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cosets.html" title="Coxeter Cosets"
+             accesskey="P">previous</a> |</li>
+<li>
+    <a href="index.html">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+
+          <li><a href="cosets.html" accesskey="U">Coxeter Cosets</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="conjugacy-classes">
+<h1><span class="math">\(\phi\)</span>-Conjugacy Classes<a class="headerlink" href="#conjugacy-classes" title="Permalink to this headline">¶</a></h1>
+<p>Let us recall that the automorphism <span class="math">\(\phi\)</span> induces a natural equivalence
+relation on the group <span class="math">\(W\)</span>, which we call <span class="math">\(\phi\)</span>-conjugacy. In
+particular, we say two elements <span class="math">\(x,y \in W\)</span> are <span class="math">\(\phi\)</span>-conjugate
+if there exists an element <span class="math">\(z \in W\)</span> such that</p>
+<div class="math">
+\[x = z^{-1}y\phi(z).\]</div>
+<p>The equivalence classes under this relation are known as the
+<span class="math">\(\phi\)</span>-conjugacy classes of <span class="math">\(W\)</span>.</p>
+<div class="admonition-definition admonition">
+<p class="first admonition-title">Definition</p>
+<p>We say <span class="math">\(C \subset W\phi\)</span> is a <span class="math">\(\phi\)</span>-conjugacy class if any
+one of the following equivalent conditions is satisfied:</p>
+<ul class="last simple">
+<li><span class="math">\(C\)</span> is a <span class="math">\(W\)</span>-orbit under the natural conjugation action of <span class="math">\(W\)</span> on
+<span class="math">\(W\phi\)</span>.</li>
+<li><span class="math">\(C\)</span> is a conjugacy class of <span class="math">\(\widetilde{W}\)</span> contained in the
+coset <span class="math">\(W\phi\)</span>.</li>
+<li>the set <span class="math">\(\{w \in W \mid (w, \phi) \in C\}\)</span> is a <span class="math">\(\phi\)</span>-conjugacy
+class of <span class="math">\(W\)</span>.</li>
+</ul>
+</div>
+<p>The following function will produce the <span class="math">\(\phi\)</span>-conjugacy classes of any
+Coxeter coset.</p>
+<dl class="function">
+<dt id="pycox.coxcos.conjugacyclasses">
+<tt class="descclassname">pycox.coxcos.</tt><tt class="descname">conjugacyclasses</tt><big>(</big><em>W</em><big>)</big><a class="headerlink" href="#pycox.coxcos.conjugacyclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the conjugacy classes of a Coxeter group/coset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>W</strong> : <tt class="xref py py-class docutils literal"><span class="pre">coxeter</span></tt> or <a class="reference internal" href="cosets.html#pycox.coxcos.coset" title="pycox.coxcos.coset"><tt class="xref py py-class docutils literal"><span class="pre">coset</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : dictionary</p>
+<blockquote class="last">
+<div><p>Contains three entries <tt class="docutils literal"><span class="pre">reps</span></tt>, <tt class="docutils literal"><span class="pre">classlengths</span></tt> and
+<tt class="docutils literal"><span class="pre">classnames</span></tt> which are all lists. The first contains
+representatives of minimal length, the second the size of the
+conjugacy classes and finally the names of the conjugacy
+classes.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-obj docutils literal"><span class="pre">core.conjugacyclass</span></tt>, <tt class="xref py py-obj docutils literal"><span class="pre">core.conjtomin</span></tt></p>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>The conventions are the same as in <a class="reference external" href="http://www.math.rwth-aachen.de/homes/CHEVIE/">CHEVIE</a>; in particular
+the ordering of the classes matches that in CHEVIE.</li>
+<li>For the conventions concerning the raw data for each
+irreducible type see the databook.</li>
+<li>For a coset this computes the phi-conjugacy classes of the
+coset.</li>
+<li>For a group the representatives are <em>very good</em> in the
+sense of <a class="reference internal" href="bib.html#gm97" id="id1">[GM97]</a>.</li>
+<li>Once computed the classes are stored as the atribute
+<tt class="docutils literal"><span class="pre">conjugacyclasses</span></tt> of W.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">coxeter</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">{&#39;classnames&#39;   : [(&#39;A_0&#39;,), (&#39;~A_1&#39;,), (&#39;A_1&#39;,), (&#39;G_2&#39;,),</span>
+<span class="go">                   (&#39;A_2&#39;,), (&#39;A_1+~A_1&#39;,)],</span>
+<span class="go"> &#39;classlengths&#39; : [1, 3, 3, 2, 2, 1],</span>
+<span class="go"> &#39;reps&#39;         : [[], [1], [0], [0, 1], [0, 1, 0, 1],</span>
+<span class="go">                   [0, 1, 0, 1, 0, 1]]}</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">coxeter</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span><span class="o">.</span><span class="n">cartantype</span>
+<span class="go">[[&#39;A&#39;, [0, 2]], [&#39;C&#39;, [3, 1]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">W</span><span class="p">)[</span><span class="s">&#39;reps&#39;</span><span class="p">]</span>
+<span class="go">[[], [3], [3, 1, 3, 1], [1], [3, 1], [0], [0, 3],</span>
+<span class="go"> [0, 3, 1, 3, 1], [0, 1], [0, 3, 1], [0, 2], [0, 2, 3],</span>
+<span class="go"> [0, 2, 3, 1, 3, 1], [0, 2, 1], [0, 2, 3, 1]]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">coxeter</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Wphi</span> <span class="o">=</span> <span class="n">coset</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">phi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Wphi</span><span class="o">.</span><span class="n">phitype</span>
+<span class="go">[[&#39;A&#39;, [0, 1, 2], (0, 2)]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">Wphi</span><span class="p">)</span>
+<span class="go">{&#39;classnames&#39;   : [(&#39;1111&#39;,), (&#39;211&#39;,), (&#39;22&#39;,), (&#39;31&#39;,), (&#39;4&#39;,)],</span>
+<span class="go"> &#39;classlengths&#39; : [3, 6, 1, 8, 6],</span>
+<span class="go"> &#39;reps&#39;: [[0, 1, 0, 2, 1, 0], [1], [], [1, 2], [2]]}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+<p class="logo"><a href="index.html">
+<img class="logo" src="_static/logo.png" alt="PyCox"/>
+</a></p>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cosets.html"
+                        title="previous chapter">Coxeter Cosets</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="databook/databook.html"
+                        title="next chapter">Data Book</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/phiconjclasses.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="databook/databook.html" title="Data Book"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cosets.html" title="Coxeter Cosets"
+             >previous</a> |</li>
+<li>
+    <a href="index.html">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+
+          <li><a href="cosets.html" >Coxeter Cosets</a> &raquo;</li> 
+      </ul>
+    </div>
+<div class="footer">
+<span class="left">
+
+Last updated on Apr 27, 2014.
+
+</span>
+<span class="right">
+    
+    &copy; Copyright 2014, Meinolf Geck.
+    
+
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+1.2.2.&nbsp;&nbsp;
+
+</span>
+</div>
+
+  </body>
+</html>

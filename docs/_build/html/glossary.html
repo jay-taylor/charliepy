@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Glossary &mdash; PyCox 1.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pycox.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="top" title="PyCox 1.6.2 documentation" href="index.html" />
+    <link rel="prev" title="References" href="bib.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bib.html" title="References"
+             accesskey="P">previous</a> |</li>
+<li>
+    <a href="index.html">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="coxeter-groups">
+<h2>Coxeter Groups<a class="headerlink" href="#coxeter-groups" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-cartan-matrix">Cartan matrix</dt>
+<dd><p class="first">A matrix <span class="math">\(C = (c_{ij})\)</span>, with <span class="math">\(1 \leqslant i,j \leqslant n\)</span> and
+<span class="math">\(c_{ij} \in \mathbb{R}\)</span>, such that:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>for <span class="math">\(i\neq j\)</span> we have <span class="math">\(c_{ij} \leqslant 0\)</span></li>
+<li><span class="math">\(c_{ij} \neq 0\)</span> if and only if <span class="math">\(c_{ji} \neq 0\)</span></li>
+<li><span class="math">\(c_{ii} = 2\)</span></li>
+<li>for <span class="math">\(i \neq j\)</span> we have <span class="math">\(c_{ij}c_{ji} = 4\cos^2(\pi/m_{ij})\)</span> where
+<span class="math">\(m_{ij} \geqslant 2\)</span> or <span class="math">\(m_{ij} = \infty\)</span>.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt id="term-coxeter-group">Coxeter group</dt>
+<dd>A group <span class="math">\(W\)</span> containing a generating set <span class="math">\(\mathbb{S}\)</span> such that
+<span class="math">\((W,\mathbb{S})\)</span> is a Coxeter system.</dd>
+<dt id="term-coxeter-matrix">Coxeter matrix</dt>
+<dd><p class="first">A symmetric matrix <span class="math">\(M = (m_{ij})\)</span>, with <span class="math">\(1 \leqslant i,j \leqslant n\)</span>
+and <span class="math">\(m_{ij} \in \mathbb{N} \cup \{\infty\}\)</span>, such that</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><span class="math">\(m_{ii} = 1\)</span> for all <span class="math">\(i\)</span>,</li>
+<li><span class="math">\(m_{ij} &gt; 1\)</span> for all <span class="math">\(i \neq j\)</span>.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt id="term-coxeter-system">Coxeter system</dt>
+<dd>A pair <span class="math">\((W,\mathbb{S})\)</span> such that <span class="math">\(W\)</span> is a group and <span class="math">\(\mathbb{S}
+\subset W\)</span> is a finite generating set such that the defining relations
+for <span class="math">\(W\)</span> are just relations of the form <span class="math">\(s^2 = 1\)</span> and <span class="math">\((st)^{m_{st}} =
+1\)</span>, where <span class="math">\(s \neq t \in \mathbb{S}\)</span> and <span class="math">\(m_{st} = m_{ts} &gt; 1\)</span>. If, for
+two generators <span class="math">\(s,t \in \mathbb{S}\)</span> there exists no <span class="math">\(i \in \mathbb{N}\)</span>
+such that <span class="math">\((st)^i = 1\)</span> then as a convention we set <span class="math">\(m_{st} = \infty\)</span>.</dd>
+<dt id="term-length-function">length function</dt>
+<dd>For a Coxeter system <span class="math">\((W,\mathbb{S})\)</span> this is the function <span class="math">\(\ell : W
+\to \mathbb{N}\)</span> defined by setting <span class="math">\(\ell(1) = 0\)</span> and <span class="math">\(\ell(w) = r\)</span>
+if <span class="math">\(s_1\cdots s_r\)</span> is a reduced expression for <span class="math">\(w \neq 1\)</span>.</dd>
+<dt id="term-reduced-expression">reduced expression</dt>
+<dd>Given a Coxeter system <span class="math">\((W,\mathbb{S})\)</span> and an element <span class="math">\(w \in W\)</span> this
+is a word <span class="math">\(w = s_1\cdots s_r\)</span> in the generators <span class="math">\(\mathbb{S}\)</span> such that
+any other word <span class="math">\(w = s_1\cdots s_{r'}\)</span> satisfies <span class="math">\(r' \geqslant r\)</span>.</dd>
+</dl>
+</div>
+<div class="section" id="representation-theory">
+<h2>Representation Theory<a class="headerlink" href="#representation-theory" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-generic-degree-polynomial">generic degree polynomial</dt>
+<dd>Assume <span class="math">\(W\)</span> is a finite Coxeter group and <span class="math">\(V\)</span> is the natural module for
+<span class="math">\(W\)</span>.</dd>
+<dt id="term-j-induction">j-induction</dt>
+<dd><p class="first">For any coxeter group <span class="math">\(W\)</span> and subgroup <span class="math">\(H\)</span> this is the following map
+<span class="math">\(j_H^W : \mathrm{Cent}(H) \to \mathrm{Cent}(W)\)</span> taking class functions
+on <span class="math">\(H\)</span> to class functions on <span class="math">\(W\)</span>. Denote by <span class="math">\(n_{\chi,\rho}\)</span> the
+multiplicity of <span class="math">\(\rho \in \mathrm{Irr}(W)\)</span> in the usual induced
+character <span class="math">\(\mathrm{Ind}_H^W(\chi)\)</span>. Then</p>
+<div class="math">
+\[j_H^W(\chi) = \sum_{\rho} n_{\chi,\rho} \rho\]</div>
+<p class="last">where the sum is taken over all <span class="math">\(\rho \in \mathrm{Irr}(W)\)</span> such that
+<span class="math">\(b_{\rho} = b_{\chi}\)</span>, where <span class="math">\(b_{\chi}\)</span> denotes the b-invariant of
+<span class="math">\(\chi\)</span>. See 5.2 of <a class="reference internal" href="bib.html#gp00" id="id1">[GP00]</a> for a generalisation of this to all finite
+groups.</p>
+</dd>
+<dt id="term-preferred-extension">preferred extension</dt>
+<dd>Assume <span class="math">\((W,\mathbb{S})\)</span> is a Coxeter system such that <span class="math">\(W\)</span> is a Weyl
+group and <span class="math">\(\phi : W \to W\)</span> is an automorphism stabilising <span class="math">\(\mathbb{S}\)</span>.
+Every <span class="math">\(\phi\)</span>-invariant irreducible character of <span class="math">\(W\)</span> may be extended to
+an irreducible character of the semidirect product <span class="math">\(W \rtimes \langle
+\phi \rangle\)</span>. This term refers to the extension defined by Lusztig in
+17.2 of <a class="reference internal" href="bib.html#lus85" id="id2">[Lus85]</a>.</dd>
+<dt id="term-schur-element">Schur element</dt>
+<dd><p class="first">If <span class="math">\(\chi\)</span> is an irreducible character of an <a class="reference internal" href="#term-iwahori-hecke-algebra"><em class="xref std std-term">Iwahori-Hecke
+algebra</em></a> <span class="math">\(H_{\mathcal{A}}(W,\mathbb{S},\{a_s,b_s \mid s \in
+\mathbb{S}\})\)</span> then the associated Schur element <span class="math">\(c_{\chi}\)</span> is the
+unique element for which the following relation holds</p>
+<div class="math">
+\[\begin{split}\sum_{\chi} \chi(T_w)c_{\chi}^{-1} = \begin{cases}
+1 &amp;\text{if }w=1,\\
+0 &amp;\text{if }w\neq 1,
+\end{cases}\end{split}\]</div>
+<p class="last">where the sum runs over all the irreducible characters of the algebra.</p>
+</dd>
+<dt id="term-sign-character">sign character</dt>
+<dd>Given a Coxeter system <span class="math">\((W,\mathbb{S})\)</span> this is the homomorphism
+<span class="math">\(\mathrm{sgn} : W \to \mathbb{C}^{\times}\)</span> obtained by setting
+<span class="math">\(\mathrm{sgn}(w) = (-1)^{\ell(w)}\)</span> where <span class="math">\(\ell : W \to \mathbb{N}\)</span> is
+the length function.</dd>
+</dl>
+</div>
+<div class="section" id="hecke-algebras">
+<h2>Hecke Algebras<a class="headerlink" href="#hecke-algebras" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-iwahori-hecke-algebra">Iwahori-Hecke algebra</dt>
+<dd><p class="first">Fix a Coxeter system <span class="math">\((W,\mathbb{S})\)</span> and a commutative ring
+<span class="math">\(\mathcal{A}\)</span> with 1. Furthermore let us assume that <span class="math">\(\{a_s,b_s \mid s
+\in \mathbb{S}\} \subset \mathcal{A}\)</span> are such that <span class="math">\(a_s = a_t\)</span> and
+<span class="math">\(b_s = b_t\)</span> whenever <span class="math">\(s,t \in \mathbb{S}\)</span> are conjugate in <span class="math">\(W\)</span>. The
+Iwahori-Hecke algebra <span class="math">\(H_{\mathcal{A}}(W,\mathbb{S},\{a_s,b_s \mid
+s \in \mathbb{S}\})\)</span> is the <span class="math">\(\mathcal{A}\)</span>-algebra generated by <span class="math">\(\{T_s
+\mid s \in \mathbb{S}\}\)</span> and satisfying the relations</p>
+<div class="math">
+\[\begin{split}\begin{cases}
+T_s^2 = a_sT_1 + b_sT_s &amp;\text{for }s\in \mathbb{S}\\
+T_sT_tT_s \cdots = T_tT_sT_t \cdots &amp;\text{for }s\neq t\text{ and
+with }m_{st}\text{ factors on each side}.
+\end{cases}\end{split}\]</div>
+<p>Here <span class="math">\(m_{st}\)</span> is as in the definition of <a class="reference internal" href="#term-coxeter-system"><em class="xref std std-term">Coxeter system</em></a>. This
+algebra is in fact free as an <span class="math">\(\mathcal{A}\)</span>-module with basis given by
+<span class="math">\(\{T_w \mid w \in W\}\)</span>. It also satisfies the multiplication relation</p>
+<div class="math">
+\[\begin{split}T_sT_w = \begin{cases}
+T_{sw} &amp;\text{if }\ell(sw) &gt; \ell(w)\\
+a_sT_{sw} + b_sT_w &amp;\text{if }\ell(sw) &lt; \ell(w)
+\end{cases}\end{split}\]</div>
+<p class="last">for all <span class="math">\(s \in \mathbb{S}\)</span> and <span class="math">\(w \in W\)</span>, where <span class="math">\(\ell\)</span> is the
+<a class="reference internal" href="#term-length-function"><em class="xref std std-term">length function</em></a> of <span class="math">\((W,\mathbb{S})\)</span>.</p>
+</dd>
+<dt id="term-generic-iwahori-hecke-algebra">generic Iwahori-Hecke algebra</dt>
+<dd>Fix a Coxeter system <span class="math">\((W,\mathbb{S})\)</span> and indeterminates <span class="math">\(\{u_s \mid s
+\in \mathbb{S}\}\)</span> over <span class="math">\(\mathbb{C}\)</span> such that <span class="math">\(u_s = u_t\)</span> whenever <span class="math">\(s,t
+\in \mathbb{S}\)</span> are conjugate in <span class="math">\(W\)</span>. Let <span class="math">\(\mathcal{A} =
+\mathbb{Z}[u_s^{\pm} \mid s \in \mathbb{S}]\)</span> and assume that there
+exists a ring homomorphism <span class="math">\(\mathcal{A} \to \mathbb{Z}\)</span> which sends
+<span class="math">\(u_s \to 1\)</span> for all <span class="math">\(s \in \mathbb{S}\)</span>. Then the generic Iwahori-Hecke
+algebra is defined to be the <a class="reference internal" href="#term-iwahori-hecke-algebra"><em class="xref std std-term">Iwahori-Hecke algebra</em></a>
+<span class="math">\(H_{\mathcal{A}}(W,\mathbb{S},\{u_s,u_s-1 \mid s \in \mathbb{S}\})\)</span>.</dd>
+</dl>
+</div>
+<div class="section" id="combinatorics">
+<h2>Combinatorics<a class="headerlink" href="#combinatorics" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-bipartition">bipartition</dt>
+<dd>A pair of ordered partitions.</dd>
+<dt id="term-partition">partition</dt>
+<dd>A finite weakly decreasing sequence of non-zero natural numbers.</dd>
+<dt id="term-dual-partition">dual partition</dt>
+<dd><p class="first">If <span class="math">\(\lambda = (\lambda_1,\dots,\lambda_r)\)</span> is a partition of <span class="math">\(n\)</span> then
+the dual partition is the partition of <span class="math">\(n\)</span> obtained in the following
+way. First let <span class="math">\(\lambda' = (\lambda_1',\dots,\lambda_n')\)</span> be the
+sequence obtained by setting</p>
+<div class="math">
+\[\lambda_i' = |\{\lambda_j \mid 1 \leqslant j \leqslant n
+\text{ and }\lambda_j \geqslant i\}|.\]</div>
+<p class="last">Then <span class="math">\(\lambda^*\)</span> is obtained from <span class="math">\(\lambda'\)</span> by removing all entries
+equal to zero.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+<p class="logo"><a href="index.html">
+<img class="logo" src="_static/logo.png" alt="PyCox"/>
+</a></p>
+
+
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Glossary</a><ul>
+<li><a class="reference internal" href="#coxeter-groups">Coxeter Groups</a></li>
+<li><a class="reference internal" href="#representation-theory">Representation Theory</a></li>
+<li><a class="reference internal" href="#hecke-algebras">Hecke Algebras</a></li>
+<li><a class="reference internal" href="#combinatorics">Combinatorics</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bib.html"
+                        title="previous chapter">References</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/glossary.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bib.html" title="References"
+             >previous</a> |</li>
+<li>
+    <a href="index.html">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+ 
+      </ul>
+    </div>
+<div class="footer">
+<span class="left">
+
+Last updated on Apr 27, 2014.
+
+</span>
+<span class="right">
+    
+    &copy; Copyright 2014, Meinolf Geck.
+    
+
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+1.2.2.&nbsp;&nbsp;
+
+</span>
+</div>
+
+  </body>
+</html>

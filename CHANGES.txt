@@ -1,0 +1,204 @@
+PyCox Change Log
+----------------------------------------------
+
+v1.6180, 27/01/2014, MG
+   Corrected an error in the function 'heckeirrdata' for type Dn with
+   small value of n. Added function 'classmin' to compute elements of 
+   minimal length in a conjugacy class.  Improved  functions  to deal  
+   with generalised tau-invariants  ('gentaucells' and 'gentaureps').  
+   Added data on left cells for E8 and new functions for working with
+   left and two-sided cells (equal parameter case); see 'klcellreps',  
+   'klcellrepelm' and 'leftcellelm'. 
+
+
+v1.618, 20/12/2012, MG
+
+   The behaviour of the  'range' function with respect to slicing has 
+   changed from Python 3.0 to 3.2.  This patch contains some fixes so 
+   that it works in all Python 3 versions. Also corrected a minor bug 
+   in decomposemat (the indices were not sorted before). 
+
+
+v1.61, 20/12/2012, MG
+
+   The help to  'chartableD'  now contains a more precise description 
+   of the conventions used,  especially for the case where n is even.
+   An error has been corrected in the list of characters  returned by 
+   the function 'libdistinv'.
+
+
+v1.6, 23/04/2012, MG
+
+   This is intended to be the last major version of  PyCox 1.  (There 
+   will be further bug fix releases, but everything entirely new will 
+   go  into  what  may  eventually be called  PyCox 2.)  Now, the new 
+   things in this release are: the function 'displaymat' which allows  
+   for  a nice printing  of various  objects based on matrices, e.g., 
+   character tables,  induction tables,  and so on.  There  is also a 
+   much improved version of the function  'distinguishedinvolutions': 
+   it can compute  (by a general method, and for the first time)  the 
+   set of distinguished involutions for type E8;  this takes about 18 
+   days and 22GB main memory.
+
+--------------------
+
+v1.51, 04/02/2012, MG
+
+   The patch 1.51  contains a number of minor fixes;  it now also has
+   an implementation of 'relklpols' for unequal parameters. (E.g., it 
+   computes all left cells in type F_4, for any choice of parameters, 
+   in about 5 seconds;  it  is  capable  of dealing with type B_n and 
+   unequal  parameters for  n  up to around 7.) A further addition is 
+   the function  'dimBu' which I had written years ago for gap-chevie  
+   and which is now included here.
+
+
+v1.5, 27/01/2012, MG
+
+   This release contains, first of all, some bug fixes and minor (but
+   hopefully useful) additions, like the function  'allelmsproperty'. 
+   There is now a simple arithmetic for cyctlotomic integers, so that
+   we can deal with dihedral groups in general; see 'rootof1'. And it
+   also contains some  basic support for Kazhdan-Lusztig polynomials,  
+   cells and  W-graphs; see 'klcells', 'wgraphs' and 'klpolynomials'. 
+   Here, we make systematic use of  the concept  of induced cells and  
+   relative  Kazhdan-Lusztig  polynomials.  The resulting algorthm is
+   remarkably efficient.  For example,  the  function  'klcells'  can 
+   compute the  W-graphs  of all  left cells for groups of rank up to 
+   about 8 (except for type E8). Some timings: 
+
+            Type F4:     72 left cells, about   1 second. 
+            Type H4:    206 left cells, about 370 seconds. 
+            Type E6:    652 left cells, about  45 seconds. 
+            Type E7:   6364 left cells, about   4 hours.
+            Type A8:   2620 left cells, about 140 seconds. 
+            Type D8:  11504 left cells, about   4 hours. 
+            Type B8:  15304 left cells, about  58 hours. 
+
+   (For B8 at least 9GB are required; otherwise, 4GB are sufficient.)
+   The programs  are not  yet  completely optimised but,  still,  the 
+   ultimate challenge, i.e., the computation of the 101796 left cells  
+   in type E8, seems to remain out of reach for the time being.
+
+--------------------
+
+v1.4, 30/09/2011, MG
+
+   This module has now reached a state  where it contains a number of 
+   features which have never been included in the official gap-chevie 
+   release, for example: 
+      * Lusztig's constructible characters and families (this already  
+        appeared in version 1.1; see 'lusztigfamilies');
+      * the algorithm for computing the sizes of special pieces  (see
+        'specialpieces'); 
+      * the computation of character values on central elements  (see
+        'heckecentraltable').
+   (However, there are also a number of features of gap-chevie  which 
+   are not yet available in this module; for example, Coxeter cosets,
+   Kazhdan-Lusztig polynomials and  various things from Jean Michel's 
+   development version of gap-chevie.)  I intend to add  support  for 
+   Kazhdan-Lusztig cells and  their relative version  (with  possibly 
+   unequal parameters) to a later version.  I am certain that further
+   extensive  checking and  experimenting is  required to  make these 
+   programs as robust as possible.  At least there is now, I believe, 
+   sufficient material to develop further applications. 
+
+--------------------
+
+v1.3, 23/09/2011, MG
+
+   This version contains basic support for Iwahori-Hecke algebras and 
+   their characters;  see 'heckechartable' and the further references
+   there. The functions are written in such a way that the parameters  
+   can  be any non-zero  elements in some  base ring. We also provide 
+   a simple  arithmetic for  Laurent polynomials in one variable (see  
+   'lpol'),  in order to be able  to work with  generic algebras  and 
+   their  characters.  If something more  efficient is required, then 
+   one has to import external modules (e.g., 'sympy')  or work within 
+   sage (an example is given in the help for 'classpolynomials').  
+
+   Another addition in this version is  a simple arithmetic  for  the 
+   quadratic extension generated by the golden  ratio  (1+sqrt(5))/2, 
+   so that we now have exact arithmetic for the types I2(5), H_3, and
+   H_4; see 'zeta5'. This also provides a more user-friendly printing
+   of the irrationalities. 
+
+--------------------
+
+v1.2, 02/09/2011, MG
+
+   This version mainly contains bug fixes  and internal  improvements
+   to some algorithms, in particular character tables of types A,B,D. 
+   For ranks at most 8 (i.e., cases that  are involved in exceptional 
+   types),  this now works reasonably very fast.  Some  examples  for 
+   larger ranks:
+
+     chartable(coxeter("A",15))  now takes about   5 seconds CPU.
+     chartable(coxeter("D",10))  now takes about  15 seconds CPU.
+     chartable(coxeter("B",11))  now takes about  65 seconds CPU.
+     chartable(coxeter("A",19))  now takes about  95 seconds CPU.
+     lusztigfamilies(coxeter("E",8)) takes about 100 seconds CPU.
+
+   If this is not fast enough in some applications, then one needs to
+   re-write  the  functions in  the gap  library file 'ctsymmet.g' in 
+   python.
+
+   Also added some  utility functions:  'transposemat' (which made me 
+   learn quite a bit about python ...) and flatlist. Having seen  how
+   transposemat performs,  I also revise my statement  in versioninfo
+   1.0 concerning general list handling:  some operations take longer
+   than in gap, but  others are faster,  for example, this version of 
+   transposemat.  The test suite still runs faster in python 2.7 than
+   in 3.2.
+
+--------------------
+
+v1.1, 28/08/2011, MG
+
+   This second version now  includes  support  for ordinary character 
+   tables of finite Coxeter groups.  The material is developed to the
+   point  where one can compute induce/restrict tables,  a-invariants 
+   and Lusztig's families in python. See the help for 'chartable' and 
+   'lusztigfamilies' for more details. 
+
+   The whole module works both in python 2.7 and 3.2, but it seems to
+   run almost twice as fast in python 2.7 than in 3.2 !  (I have  not 
+   yet tried to find out why.)
+
+   On the whole, the programmes work out so I intend to continue with
+   this project. Due to other obligations, development will slow down
+   now for a while. Some further testing and profiling is required to 
+   see where performance could be improved, e.g., in 'chartableB' and
+   'fusionconjugacyclasses'. The next step  will be to  think about a 
+   package for polynomials, on which Hecke algebras,  their character 
+   tables and Kazhdan-Lusztig polynomials will rely. 
+
+--------------------
+
+v1.0, 23/08/2011, MG
+
+   The original version of CHEVIE was developed for GAP3 (and MAPLE). 
+   This module  now is the result of  my efforts  (1) to learn one of  
+   the more  modern programming languages and  (2) to see if at least 
+   parts of the gap part of chevie can  be implemented in it. I chose  
+   python (version 2.7)  mainly  because of its popularity,  and then 
+   also because 'sage' is based on python; in particular, this module 
+   can just be imported into 'sage'. 
+
+   The functions in this version basically implement the purely group 
+   theoretical part: creation of a (possibly infinite) Coxeter group,
+   working with the elements.  For finite  Coxeter  groups, there are 
+   functions for reflection subgroups and conjugacy classes.
+
+   The main difficulty  was to  find good  replacements  for the fast 
+   permutation arithmetic in gap. It also seems that,  in a number of
+   applications,  the general handling of lists is  considerably more 
+   efficient in gap than in python. Some  work will be needed to deal
+   more properly with the  irrational numbers involved in type H3, H4
+   and  dihedral types. (Currently  I just use  float numbers,  which 
+   appears to be ok for H3 and H4.) Overall, the functions work  with
+   satisfactory efficieny, including type E8.
+
+   Plans for the next version include:
+    * basic  character table operations
+    * Kazhdan-Lusztig polynomials

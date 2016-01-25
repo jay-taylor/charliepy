@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PyCox &mdash; PyCox 1.6.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pycox.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.6.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+    <link rel="top" title="PyCox 1.6.2 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li>
+    <a href="#">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+<h1>Welcome</h1>
+
+<p>
+PyCox is a python package which implements algorithms to carry out symbolic
+computations with Coxeter groups and related mathematical structures. It may be
+considered as a Python version of the original <a target="_blank"
+href="http://www.math.rwth-aachen.de/~CHEVIE/">CHEVIE</a> package which was
+written in <a target="_blank" href="http://www.gap-system.org/Gap3/gap3.html">
+GAP3</a> and <a target="_blank" href="http://www.maplesoft.com/">MAPLE</a>.
+However, it also contains functionality which is not present in the original
+CHEVIE package. People familiar with CHEVIE will be quite at home using PyCox
+but a knowledge of CHEVIE is not necessary to use the software.
+</p>
+
+<h2 style="margin-bottom: 0">Documentation</h2>
+<table class="contentstable" align="center" style="margin-left: 30px">
+    <tr>
+    <td width="50%">
+        <p class="biglink">
+        <a class="biglink" href="tutorial.html">
+            User Documentation</a><br/>
+        <span class="linkdescr">
+            how to use the important functions of PyCox
+        </span>
+        </p>
+
+        <p class="biglink">
+        <a class="biglink" href="contents.html">
+            Developer Documentation</a><br/>
+        <span class="linkdescr">
+            complete PyCox documentation
+        </span>
+        </p>
+    </td>
+    <td width="50%">
+        <p class="biglink">
+        <a class="biglink" href="databook/databook.html">
+            Data Book</a><br/>
+        <span class="linkdescr">
+            data and conventions on types
+        </span>
+        </p>
+
+        <p class="biglink">
+        <a class="biglink" href="genindex.html">
+            General Index</a><br/>
+        <span class="linkdescr">
+            all functions, classes, terms
+        </span>
+        </p>
+    </td>
+    </tr>
+</table>
+
+<h2>Citing PyCox</h2>
+<p>
+If you use PyCox as part of a research project then you can reference the
+following article written by Geck.
+</p>
+
+<p style="width: 75%; float: center; margin: 0px auto;
+padding: 5px; border: 1px solid #000000;">
+M.&nbsp;Geck, <i><a target="_blank"
+href="http://dx.doi.org/10.1112/S1461157012001064">PyCox: computing with
+(finite) Coxeter groups and Iwahori-Hecke algebras</a></i>,
+LMS J. Comput. Math. <b>15</b> (2012), 231-256.
+</p>
+
+<p>
+You can of course also cite this documentation as a reference point for PyCox.
+If you have used PyCox for some research then please tell us about it by
+contacting one of the contributors!
+</p>
+
+<h2>Why Python?</h2>
+<p>
+One of the original reasons for choosing Python as the language for PyCox is
+the success of the
+<a target="_blank" href="http://www.sagemath.org/">Sage</a> project.
+In particular, PyCox may be used in Sage by simply importing PyCox in an
+interactive session. Here are some additional reasons:
+</p>
+
+<ul>
+    <li>
+    Python is very popular with the wider scientific community (see for
+    instance the <a target="_blank" href="http://www.scipy.org/">SciPy</a>
+    project).
+    </li>
+    <li>
+    It is easy to encorporate C extensions into Python, thus allowing one to
+    obtain speed advantages when needed.
+    </li>
+    <li>
+    As Python is a widely used modern programming language, anyone learning to
+    use PyCox for research will simultaneously gain a useful transferable
+    skill.
+    </li>
+    <li>
+    The Python language is syntactically similar to the <a target="_blank"
+    href="http://www.gap-system.org/Gap3/gap3.html">GAP3</a> language, on
+    which the original CHEVIE package was based. Thus it should not be
+    difficult for people to switch between the two languages.
+    </li>
+</ul>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+
+<p class="logo"><a href="#">
+<img class="logo" src="_static/logo.png" alt="PyCox"/>
+</a></p>
+
+<h3>Download</h3>
+<p>Current version: <b>1.6</b></p>
+<p>Get PyCox from the
+<a href="http://pypi.python.org/pypi/PyCox">Python Package Index</a>, or
+install it from the terminal with the command:</p>
+<pre>easy_install -U PyCox</pre>
+
+<h3>Contributors</h3>
+<p>The following people contribute to the PyCox
+project:</p>
+
+<ul>
+    <li>
+        <a href="http://www.mathematik.uni-stuttgart.de/~geckmf/">
+            M.&nbsp;Geck</a> (Stuttgart)
+    </li>
+    <li>
+        <a href="http://www.mathematik.uni-kl.de/~taylor/index.html">
+            J.&nbsp;Taylor</a> (Kaiserslautern)
+    </li>
+</ul>
+
+<p>
+If you have any questions concerning PyCox then please contact one of the
+contributors.
+</p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="np-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+<li>
+    <a href="#">PyCox Home</a>&nbsp;|
+</li>
+<li>
+    <a href="contents.html">Documentation</a>
+     &raquo;
+</li>
+ 
+      </ul>
+    </div>
+<div class="footer">
+<span class="left">
+
+Last updated on Apr 27, 2014.
+
+</span>
+<span class="right">
+    
+    &copy; Copyright 2014, Meinolf Geck.
+    
+
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+1.2.2.&nbsp;&nbsp;
+
+</span>
+</div>
+
+  </body>
+</html>

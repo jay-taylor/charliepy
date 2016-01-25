@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% set title = _('PyCox') %}
+{% block body %}
+<h1>{%trans%}Type \(\mathrm{A}_n\){%endtrans%}</h1>
+<p>{%trans%}
+Throughtout \((W,\mathbb{S})\) will denote an irreducible Coxeter system of
+type \(\mathrm{A}_n\). We will also denote by (\Phi\) a root system whose
+associated reflection group is \(W\) and by \(\Delta \subset \Phi^+ \subset
+\Phi\) a set of simple and positive roots respectively.
+{%endtrans%}</p>
+
+<h2>{%trans%}The Weyl Group and Root System{%endtrans%}</h2>
+<table class="datatable">
+    <tr>
+        <td class="header">
+            <p>{%trans%}
+            \(W\)
+            {%endtrans%}</p>
+        </td>
+        <td class="content">
+            <p>{%trans%}
+            The symmetric group \(\mathfrak{S}_{n+1}\)
+            {%endtrans%}</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="header">
+            <p>{%trans%}
+            \(\mathbb{S}\)
+            {%endtrans%}</p>
+        </td>
+        <td class="content">
+            <p>{%trans%}
+            Basic transpositions \(\{(1,2),\dots,(n,n+1)\}\)
+            {%endtrans%}</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="header">
+            <p>{%trans%}
+            \(\Phi\)
+            {%endtrans%}</p>
+        </td>
+        <td class="content">
+            <p>{%trans%}
+            Let \(V \subseteq \mathbb{R}^{n+1}\) be the subspace
+            {%endtrans%}</p>
+
+            \[ \{(x_1,\dots,x_n) \mid x_1+\cdots+x_n = 0\} \]
+           
+            <p>{%trans%}
+            Assuming \(\{e_1,\dots,e_n\}\) is the standard basis of
+            \(\mathbb{R}^{n+1}\) then
+            {%endtrans%}</p>
+
+            \[ \Phi = \{e_i - e_j \mid i \neq j,
+                 1 \leqslant i,j \leqslant n+1\} \]
+        </td>
+    </tr>
+
+    <tr>
+        <td class="header">
+            <p>{%trans%}
+            \(\Phi^+\)
+            {%endtrans%}</p>
+        </td>
+        <td class="content">
+            <p>{%trans%}
+            \( \{e_i - e_j \mid 1 \leqslant i < j \leqslant n+1\} \)
+            {%endtrans%}</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="header">
+            <p>{%trans%}
+            \(\Delta\)
+            {%endtrans%}</p>
+        </td>
+        <td class="content">
+            <p>{%trans%}
+            \( \{e_1 - e_2,\dots, e_n - e_{n+1}\} \)
+            {%endtrans%}</p>
+        </td>
+    </tr>
+</table>
+
+<h2>{%trans%}Conjugacy Classes of \(W\){%endtrans%}</h2>
+<p>{%trans%}
+The conjugacy classes of the symmetric group \(\mathfrak{S}_{n+1}\) are
+naturally labelled by the partitions of \(n+1\) (see 1.2 of [JK81]).
+{%endtrans%}</p>
+</table>
+{% endblock %}
