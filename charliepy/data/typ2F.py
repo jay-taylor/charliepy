@@ -9,22 +9,15 @@ def conjclassdata(ind, **kwargs):
     of order 2. The data is adapted from the corresponding files in GAP-Chevie.
   
     """
-    # stores the data: representatives, centraliser orders, names
-    repcentnam = list() 
+    classes = (
+        ([], 16, '2a'), ([1, 2, 1], 8, '8a'), ([0], 4, '4a'),
+        ([0, 1, 0, 2, 1, 0, 3, 2, 1, 0], 12, '24a'), ([0, 1], 12, '24b'),
+        ([1], 8, '8a'), ([0, 1, 0, 2, 1, 0, 2, 1], 16, '8b'),
+        ([0, 1, 2, 1], 6, '12a'),
+        ([0, 1, 0, 2, 1, 0, 2, 1, 3, 2, 1, 0], 48, '4b'),
+        ([0, 1, 0, 2, 1, 0, 2, 1, 3, 2, 1, 0, 2, 1, 3, 2, 1, 0], 96, '8c'),
+        ([0, 1, 0, 2, 1, 0], 96, '8d')
+    )
 
-    repcentnam.append([[], [1, 2, 1], [0], [0, 1, 0, 2, 1, 0, 3, 2, 1, 0],
-                       [0, 1], [1], [0, 1, 0, 2, 1, 0, 2, 1], [0, 1, 2, 1],
-                       [0, 1, 0, 2, 1, 0, 2, 1, 3, 2, 1, 0],
-                       [0, 1, 0, 2, 1, 0, 2, 1, 3, 2, 1, 0, 2, 1, 3, 2, 1, 0],
-                       [0, 1, 0, 2, 1, 0]])
-
-    # redefine the reps based on the indices of the irreducible component
-    repcentnam[0] = [[ind[j] for j in rep] for rep in repcentnam[0]]
-
-    repcentnam.append([16, 8, 4, 12, 12, 8, 16, 6, 48, 96, 96])
-
-    repcentnam.append(["2a", "8a", "4a", "24a", "24b", "8a", "8b", "12a",
-                       "4b", "8c", "8d"])
-
-    return repcentnam
+    return (([ind[j] for j in cls[0]], cls[1], cls[2]) for cls in classes)
 

@@ -12,16 +12,18 @@
 #       o=>=o---o-- ... --o=>=o
 #
 
-from .. import utils as utils
+from .. import utils
 from . import typ1A
 
 import numpy as np
 
 def cartanmat(n):
-    if n < 2:
-        raise ValueError("Type BC root system must have rank at least 2.")
-    elif n == 2:
-        C = np.array([[2, -4], [-1, 2]], dtype = 'int8')
+    if n < 3:
+        raise ValueError("Type BC root system must have rank at least 3.")
+    # The case of BC_1 is just too problematic. Its Cartan matrix is the
+    # same as the infinite rank 2 case.
+    #elif n == 2:
+    #    C = np.array([[2, -4], [-1, 2]], dtype = 'int8')
     else:
         C = typ1A.cartanmat(n)
         C[0][1], C[n-2][n-1] = -2, -2

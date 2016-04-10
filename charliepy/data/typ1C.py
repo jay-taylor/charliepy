@@ -5,13 +5,15 @@
 #            0   1                n-1
 #            o---o-- ... --o---o=<=o
 
-from .. import utils as utils
+from .. import utils
 from . import typ1A as typA
 from . import typ1B as typB
 
 def cartanmat(n):
     if n < 1:
         raise ValueError("Rank of C_n must be at least 1!")
+    elif n == 1:
+        return np.array([2], dtype = 'int8')
 
     cmat = typA.cartanmat(n)
     cmat[n-1][n-2] = -2
@@ -25,23 +27,36 @@ def diagram(inds):
     print(out)
     return None
 
+def rootlengths(n, **kwargs):
+    """
+    Returns a generator giving the relative root lengths.
+
+    """
+    if n == 1:
+        yield 1
+    else:
+        for i in range(n-1):
+            yield 1
+        yield 2
+
 def degrees(n):
     return list(range(2, 2*n+1, 2))
 
-def conjclassdata(ind, **kwargs):
-    # stores the data: representatives, centraliser orders, names
+def longestword(inds):
+    return (inds[0::2] + inds[1::2])*len(inds)
+
+def conjclasses(ind, **kwargs):
     n = len(ind)
 
     # If n == 2 we permute the labellings of the conjugacy classes. This means
     # that the computation of the character table stays the same for both B and
     # C.
     if n == 2:
-        return typB.conjclassdata(ind[::-1])
+        return typB.conjclasses(ind[::-1])
     else:
-        return typB.conjclassdata(ind)
+        return typB.conjclasses(ind)
 
-def irrchardata(n, **kwargs):
-    return typB.irrchardata(n)
-
-def chartable(n, **kwargs):
-    return typB.chartable(n)
+# These are all identical to the type B case.
+conjclasses_min = typB.conjclasses_min
+irrchars = typB.irrchars
+chartable = typB.chartable

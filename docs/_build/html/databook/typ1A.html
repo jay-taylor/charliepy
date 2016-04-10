@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Type \(\mathrm{A}_n\) &mdash; PyCox 1.6.2 documentation</title>
+    <title>Type \(\mathrm{A}_n\) &mdash; CharLiePy 0.1.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/pycox.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.6.2',
+        VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/icon.ico"/>
-    <link rel="top" title="PyCox 1.6.2 documentation" href="../index.html" />
-    <link rel="up" title="Data Book" href="databook.html" />
-    <link rel="next" title="General Algebra" href="../algebra.html" />
-    <link rel="prev" title="Data Book" href="databook.html" /> 
+    <link rel="top" title="CharLiePy 0.1.0 documentation" href="../index.html" />
+    <link rel="up" title="4. Data Book" href="databook.html" />
+    <link rel="next" title="5. General Algebra" href="../algebra.html" />
+    <link rel="prev" title="4. Data Book" href="databook.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,30 +41,20 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../algebra.html" title="General Algebra"
+          <a href="../algebra.html" title="5. General Algebra"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="databook.html" title="Data Book"
+          <a href="databook.html" title="4. Data Book"
              accesskey="P">previous</a> |</li>
-<li>
-    <a href="../index.html">PyCox Home</a>&nbsp;|
-</li>
-<li>
-    <a href="../contents.html">Documentation</a>
-     &raquo;
-</li>
-
-          <li><a href="databook.html" accesskey="U">Data Book</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">CharLiePy Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="databook.html" accesskey="U">4. Data Book</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="type">
 <h1>Type <span class="math">\(\mathrm{A}_n\)</span><a class="headerlink" href="#type" title="Permalink to this headline">¶</a></h1>
@@ -145,7 +135,7 @@ the Coxeter system is</p>
 <div class="section" id="conjugacy-classes">
 <span id="typ-1a-coxeter-conj-classes"></span><h3>Conjugacy Classes<a class="headerlink" href="#conjugacy-classes" title="Permalink to this headline">¶</a></h3>
 <p>The cycle type of any element of the symmetric group <span class="math">\(\mathfrak{S}_{n+1}\)</span> gives
-a <a class="reference internal" href="../glossary.html#term-partition"><em class="xref std std-term">partition</em></a> of <span class="math">\(n+1\)</span> which uniquely determines the conjugacy class
+a <a class="reference internal" href="../glossary.html#term-partition"><span class="xref std std-term">partition</span></a> of <span class="math">\(n+1\)</span> which uniquely determines the conjugacy class
 containing the element (see 1.2 of <a class="reference internal" href="../bib.html#jk81" id="id1">[JK81]</a>). To each partition <span class="math">\(\lambda \vdash
 n+1\)</span> we denote by <span class="math">\(w_{\lambda}\)</span> a <em>very good</em> representative of the
 corresponding conjugacy class. This may be constructed in the following way
@@ -168,11 +158,11 @@ non-negative integers <span class="math">\(a_i\)</span>, then we have the centra
 <h3>Irreducible Characters<a class="headerlink" href="#irreducible-characters" title="Permalink to this headline">¶</a></h3>
 <p>There is a bijection between the set of partitions of <span class="math">\(n+1\)</span> and the irreducible
 characters of <span class="math">\(W\)</span> which may be constructed as follows. For each
-<a class="reference internal" href="../glossary.html#term-partition"><em class="xref std std-term">partition</em></a> <span class="math">\(\lambda\)</span> we consider the standard parabolic subgroup
+<a class="reference internal" href="../glossary.html#term-partition"><span class="xref std std-term">partition</span></a> <span class="math">\(\lambda\)</span> we consider the standard parabolic subgroup
 <span class="math">\(W_{\lambda^*}\)</span> of <span class="math">\(W\)</span> isomorphic to <span class="math">\(\mathfrak{S}_{\lambda_1^*} \times \cdots
 \times \mathfrak{S}_{\lambda_r^*}\)</span>, where <span class="math">\(\lambda^* = (\lambda_1^*, \dots,
-\lambda_r^*)\)</span> is the <a class="reference internal" href="../glossary.html#term-dual-partition"><em class="xref std std-term">dual partition</em></a> of <span class="math">\(\lambda\)</span>. The
-<a class="reference internal" href="../glossary.html#term-j-induction"><em class="xref std std-term">j-induction</em></a> of the <a class="reference internal" href="../glossary.html#term-sign-character"><em class="xref std std-term">sign character</em></a> of <span class="math">\(W_{\lambda^*}\)</span></p>
+\lambda_r^*)\)</span> is the <a class="reference internal" href="../glossary.html#term-dual-partition"><span class="xref std std-term">dual partition</span></a> of <span class="math">\(\lambda\)</span>. The
+<a class="reference internal" href="../glossary.html#term-j-induction"><span class="xref std std-term">j-induction</span></a> of the <a class="reference internal" href="../glossary.html#term-sign-character"><span class="xref std std-term">sign character</span></a> of <span class="math">\(W_{\lambda^*}\)</span></p>
 <div class="math">
 \[\chi_{\lambda} = j_{W_{\lambda^*}}^W(\mathrm{sgn})\]</div>
 <p>is then an irreducible character of <span class="math">\(W\)</span> (see 5.4.5 of <a class="reference internal" href="../bib.html#gp00" id="id4">[GP00]</a>). The map
@@ -193,10 +183,10 @@ of <span class="math">\(W\)</span> are simply the conjugacy classes of <span cla
 <div class="math">
 \[\lambda \mapsto w_{\lambda} \mapsto w_{\lambda}w_0\]</div>
 <p>gives a bijection between the partitions of <span class="math">\(n+1\)</span> and the <span class="math">\(\phi\)</span>-conjugacy
-classes of <span class="math">\(W\)</span>. Here <span class="math">\(w_{\lambda}\)</span> is as in <a class="reference internal" href="#typ-1a-coxeter-conj-classes"><em>Conjugacy Classes</em></a>.</p>
+classes of <span class="math">\(W\)</span>. Here <span class="math">\(w_{\lambda}\)</span> is as in <a class="reference internal" href="#typ-1a-coxeter-conj-classes"><span>Conjugacy Classes</span></a>.</p>
 <p>To construct minimal length representatives of the <span class="math">\(\phi\)</span>-conjugacy classes we
 will need to work in the symmetric group <span class="math">\(\mathfrak{S}_{n+1}\)</span>. Let <span class="math">\(\lambda\)</span> be
-a <a class="reference internal" href="../glossary.html#term-partition"><em class="xref std std-term">partition</em></a> of <span class="math">\(n+1\)</span>. We will denote by <span class="math">\(\mu = (\mu_1,\dots,\mu_r)\)</span> a
+a <a class="reference internal" href="../glossary.html#term-partition"><span class="xref std std-term">partition</span></a> of <span class="math">\(n+1\)</span>. We will denote by <span class="math">\(\mu = (\mu_1,\dots,\mu_r)\)</span> a
 <em>maximal composition</em> obtained from <span class="math">\(\lambda\)</span> by rearranging the entries. In
 other words, there exists <span class="math">\(k\)</span> <span class="math">\((0 \leqslant k \leqslant r)\)</span> such that
 <span class="math">\(\mu_1,\dots,\mu_k\)</span> are even numbers (in any order) and <span class="math">\(\mu_{k+1},\dots,\mu_r\)</span>
@@ -228,9 +218,9 @@ characters of <span class="math">\(W\)</span> are <span class="math">\(\phi\)</s
 coset <span class="math">\(W\phi\)</span> are labelled by the partitions of <span class="math">\(n+1\)</span>. Each such irreducible
 character is obtained by restricting an extension <span class="math">\(\tilde{\chi}_{\lambda}\)</span>
 of <span class="math">\(\widetilde{W} = W \rtimes \langle \phi \rangle\)</span> to the coset <span class="math">\(W\phi\)</span>. Here
-we choose Lusztig&#8217;s <a class="reference internal" href="../glossary.html#term-preferred-extension"><em class="xref std std-term">preferred extension</em></a>. In particular, if <span class="math">\(E\)</span> is the
+we choose Lusztig&#8217;s <a class="reference internal" href="../glossary.html#term-preferred-extension"><span class="xref std std-term">preferred extension</span></a>. In particular, if <span class="math">\(E\)</span> is the
 simple module affording <span class="math">\(\chi_{\lambda}\)</span> then <span class="math">\(\phi\)</span> acts on <span class="math">\(E\)</span> as
-<span class="math">\((-1)^{a_{\lambda}}w_0\)</span> where <span class="math">\(a_{\lambda}\)</span> is the <em class="xref std std-term">a-invariant</em> of
+<span class="math">\((-1)^{a_{\lambda}}w_0\)</span> where <span class="math">\(a_{\lambda}\)</span> is the <span class="xref std std-term">a-invariant</span> of
 <span class="math">\(\chi_{\lambda}\)</span>.</p>
 </div>
 </div>
@@ -240,15 +230,12 @@ simple module affording <span class="math">\(\chi_{\lambda}\)</span> then <span 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-
-<p class="logo"><a href="../index.html">
-<img class="logo" src="../_static/logo.png" alt="PyCox"/>
-</a></p>
-
-
-  <h3><a href="../contents.html">Table Of Contents</a></h3>
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Type <span class="math">\(\mathrm{A}_n\)</span></a><ul>
 <li><a class="reference internal" href="#root-system">Root System</a></li>
@@ -268,16 +255,18 @@ simple module affording <span class="math">\(\chi_{\lambda}\)</span> then <span 
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="databook.html"
-                        title="previous chapter">Data Book</a></p>
+                        title="previous chapter">4. Data Book</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../algebra.html"
-                        title="next chapter">General Algebra</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/databook/typ1A.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">5. General Algebra</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/databook/typ1A.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -294,7 +283,7 @@ simple module affording <span class="math">\(\chi_{\lambda}\)</span> then <span 
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -304,41 +293,19 @@ simple module affording <span class="math">\(\chi_{\lambda}\)</span> then <span 
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../algebra.html" title="General Algebra"
+          <a href="../algebra.html" title="5. General Algebra"
              >next</a> |</li>
         <li class="right" >
-          <a href="databook.html" title="Data Book"
+          <a href="databook.html" title="4. Data Book"
              >previous</a> |</li>
-<li>
-    <a href="../index.html">PyCox Home</a>&nbsp;|
-</li>
-<li>
-    <a href="../contents.html">Documentation</a>
-     &raquo;
-</li>
-
-          <li><a href="databook.html" >Data Book</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">CharLiePy Docs</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="databook.html" >4. Data Book</a> &raquo;</li> 
       </ul>
     </div>
-<div class="footer">
-<span class="left">
-
-Last updated on Apr 27, 2014.
-
-</span>
-<span class="right">
-    
-    &copy; Copyright 2014, Meinolf Geck.
-    
-
-Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-1.2.2.&nbsp;&nbsp;
-
-</span>
-</div>
-
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Jay Taylor.
+      Last updated on Jan 27, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+    </div>
   </body>
 </html>

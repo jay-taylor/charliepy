@@ -14,7 +14,7 @@
 #          0 o
 #
 
-from .. import utils as utils
+from .. import utils
 from . import typ1A
 
 import numpy as np

@@ -6,7 +6,7 @@
 #          o=>=o---o-- ... --o---o=<=o
 #
 
-from .. import utils as utils
+from .. import utils
 
 import numpy as np
 

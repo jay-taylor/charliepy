@@ -3,14 +3,18 @@
 # accesible via charliepy.Coxeter. When "from charliepy import *" is run in
 # python these functions are then directly accesible in interactive mode.
 
+# These modules have no dependencies on other modules in CharLiePy but do have
+# external dependencies.
+from . import permutat
+from .permutat import *
+from . import utils
+from .utils import *
+from . import data
+
+# Call core first because chartab is dependent on core.
 from . import core
 from .core import *
-from . import rootdata 
-from .rootdata import *
-from . import coxgrp
-from .coxgrp import *
-from . import coxcos
-from .coxcos import *
-from . import redgrp
-from .redgrp import *
-from . import data
+from . import conjclass
+from .conjclass import *
+from . import chartab
+from .chartab import *

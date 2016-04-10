@@ -5,6 +5,18 @@ import numpy as np
 import operator
 import itertools
 
+__all__ = [
+    'Perm',
+    'cycle',
+    'cycledecomp',
+    'cycles',
+    'cyclestoperm',
+    'cycletype',
+    'orderperm',
+    'permonsets',
+    'restrictedperm'
+]
+
 bitsize = "16"
 intsize = "uint" + bitsize
 
@@ -150,7 +162,7 @@ class Perm:
         """
         try:
             if other == 0:
-                return perm([])
+                return Perm(range(self.deg))
 
             elif other > 0:
                 q = self.perm
@@ -513,20 +525,35 @@ def cycletype(w, part=False):
     # the length of the cycles and not the cycles themselves.
     if part:
         cyctype = []
-        cyclesum = list() 
+        cyclesum = set() 
         for iItem in w.perm:
+            # Check if we've already seen it.
             if iItem in cyclesum:
                 continue
-            icyc = cycle(w, iItem)
+
+            # Compute the cycle containing iItem.
+            cycle = set()
+            while not i in cycle:
+                cycle.append(i)
+                i = w.perm[i]
             cyctype.append(len(icyc))
-            cyclesum += icyc
+            cyclesum |= icyc
         cyctype.sort(reverse=True)
     else:
         cyctype = [0]*(w.deg+1)
-        cyclesum = list() 
+        cyclesum = set() 
         for iItem in w.perm:
+            # Check if we've already seen it.
             if iItem in cyclesum:
                 continue
+
+            # Compute the cycle containing iItem.
+            cycle = set()
+            while not i in cycle:
+                cycle.append(i)
+                i = w.perm[i]
+            cyctype.append(len(icyc))
+            cyclesum |= icyc
             icyc = cycle(w, iItem)
             cyctype[len(icyc)] += 1
             cyclesum += icyc
@@ -567,7 +594,7 @@ def restrictedperm(w, L):
     False
 
     """
-    out = range(max(L)+1)
+    out = list(range(max(L)+1))
     for i in L:
         out[i] = w.perm[i]
 
@@ -593,8 +620,6 @@ def orderperm(w):
         p = w.perm[p]
         i += 1
     return i
-
-
 
 
 ##### Utility Functions ######

@@ -24,8 +24,8 @@
 # 0 <= i < n-1 and (n-1) = (n-1)'(n-2)'(n-1)'.
 
 from .. import utils
-from . import typ1B as typB
 from . import typ1A as typA
+from . import typ1B as typB
 
 import numpy as np
 import itertools
@@ -41,6 +41,13 @@ def cartanmat(n):
     C = typA.cartanmat(n)
     C[-3:,-3:] = [[2, -1, -1], [-1, 2, 0], [-1, 0, 2]]
     return C
+
+def rootlengths(n, **kwargs):
+    """
+    Returns a generator giving the relative root lengths.
+
+    """
+    return (1 for _ in range(n))
 
 def diagram(inds):
     """Prints the Dynkin diagram."""
@@ -63,6 +70,13 @@ def diagram(inds):
 
 def degrees(n):
     return list(range(2, 2*n+1, 2)) + [n]
+
+def longestword(inds):
+    n = len(inds)
+    L = [inds[0:n-1:2], inds[1:n-1:2]]
+    L[n % 2].append(inds[-1])
+    return (L[0] + L[1])*(n - 1)
+
 
 def _charlabels(n):
     # The ordering here is such that the sum of the entries of the first
@@ -152,10 +166,8 @@ def _conjlabels(n):
             if not len(bpart[1]) % 2:
                 yield bpart
 
-def conjclassdata(ind, **kwargs):
-    # stores the data: representatives, centraliser orders, names
-    repcentnam = [[], [], []]
-    n = len(ind)
+def conjclasses(inds, **kwargs):
+    n = len(inds)
 
     for mu in _conjlabels(n):
         # We construct the reps w(alpha,beta) as in [GP00, 3.4.12]. This
@@ -174,26 +186,24 @@ def conjclassdata(ind, **kwargs):
                 if not m and d != 1:
                     # b^+(0,d) = 1...(d-1) = 0'2'...(d-1)'
                     # Need d != 1 test otherwise ind[0] is added not [].
-                    w += ind[0:1] + ind[3:d:2] + ind[2:d:2]
+                    w += inds[0:1] + inds[3:d:2] + inds[2:d:2]
                 else:
                     # b^+(m,d) = (m+1)...(m+d-1) = (m+1)'...(m+d-1)'
                     # Note this does nothing when m = 0 and d = 1.
-                    w += ind[m+1:m+d:2] + ind[m+2:m+d:2]
+                    w += inds[m+1:m+d:2] + inds[m+2:m+d:2]
                 m += d
 
-            repcentnam[0].append(w)
+            c = typB.centraliser([mu[0], []])
+            spart = utils.intlisttostring(mu[0])
+
+            yield spart + '.+', c, w
 
             # Now the - representative. Note we must make a copy of the
-            # word otherwise we'll change what we've just appended.
+            # word otherwise we'll change what we've just yielded.
             w = w[:]
-            w[0] = ind[1]
-            repcentnam[0].append(w)
+            w[0] = inds[1]
 
-            c = utils.centralisertuple(n, 2, [mu[0], []])
-            spart = utils.intlisttostring(mu[0])
-            
-            repcentnam[1] += [c, c]
-            repcentnam[2] += [spart + '.+', spart + '.-']
+            yield spart + '.-', c, w
 
         elif isinstance(mu[1], list):
             for d in reversed(mu[1]):
@@ -205,60 +215,133 @@ def conjclassdata(ind, **kwargs):
                     # However, for cosmetics, we conjugate w, hence
                     # b^-(0,d), by 0 so that the word starts with 0'
                     # instead of 1'.
-                    w += ind[0:1] + ind[2:d]
+                    w += inds[0:1] + inds[2:d]
                 elif m:
                     # b^-(m,d) = m...101...(m+d-1)
                     #          = m'...2'0'1'...(m+d-1)'0
-                    w += ind[m:1:-1] + ind[:m+d]
+                    w += inds[m:1:-1] + inds[:m+d]
                 m += d
 
             for d in mu[0]:
                 if not m and d != 1:
                     # b^+(0,d) = 1...(d-1) = 0'2'...(d-1)'
-                    # Need d != 1 otherwise ind[0] is added not [].
-                    w += ind[0:1] + ind[3:d:2] + ind[2:d:2]
+                    # Need d != 1 otherwise inds[0] is added not [].
+                    w += inds[0:1] + inds[3:d:2] + inds[2:d:2]
                 else:
                     # b^+(m,d) = (m+1)...(m+d-1) = (m+1)'...(m+d-1)'
                     # Note this does nothing when m = 0 and d = 1.
-                    w += ind[m+1:m+d:2] + ind[m+2:m+d:2]
+                    w += inds[m+1:m+d:2] + inds[m+2:m+d:2]
                 m += d
 
-            repcentnam[0].append(w)
-            repcentnam[1].append(utils.centralisertuple(n, 2, mu)//2)
-            repcentnam[2].append(utils.parttupletostring(mu))
+            yield utils.parttupletostring(mu), typB.centraliser(mu)//2, w
 
-    return repcentnam
+def conjclasses_min(inds, **kwargs):
+    n = len(inds)
 
-def irrchardata(n, **kwargs):
-    ainv, binv, nam = [], [], []
+    for mu in _conjlabels(n):
+        if mu[1] == '+':
+            c = typB.centraliser([mu[0], []])
+            spart = utils.intlisttostring(mu[0])
 
+            yield spart + '.+', c
+            yield spart + '.-', c
+
+        elif isinstance(mu[1], list):
+            yield utils.parttupletostring(mu), typB.centraliser(mu)//2
+
+def irrchars(n, **kwargs):
     for mu in _charlabels(n):
         # We always know that sum(mu[0]) >= sum(mu[1]) from _charlabels.
         # Moreover we always know that the degenerate labels come in pairs
         # ordered by + then -.
         if mu[1] == '+':
+            # label, a-value, b-value.
             a = utils.ainvsymbol(utils.symbol([mu[0], mu[0]], 0), n)
             b = 4*sum(i*val for i, val in enumerate(mu[0])) + n//2
             spart = utils.intlisttostring(mu[0])
-            binv += [b, b]
-            ainv += [a, a]
-            nam += [spart + '.+', spart + '.-']
+            yield (spart + '.+', a, b)
+            yield (spart + '.-', a, b)
         elif isinstance(mu[1], list):
-            b = (2*sum(i*val for i, val in enumerate(mu[0]))
+            # label, a-value, b-value.
+            yield (
+                utils.parttupletostring(mu),
+                utils.ainvsymbol(utils.symbol(mu, 0), n),
+                2*sum(i*val for i, val in enumerate(mu[0]))
                     + 2*sum(i*val for i, val in enumerate(mu[1]))
-                    + sum(mu[1]))
-            binv.append(b)
-            ainv.append(utils.ainvsymbol(utils.symbol(mu, 0), n))
-            nam.append(utils.parttupletostring(mu))
+                    + sum(mu[1])
+            )
 
-    return [nam, ainv, binv]
+
+#def chartableold(n, **kwargs):
+#    ctBhalf, d = typB.chartablehalf(n)
+#
+#    ctBhalf = np.array(ctBhalf, dtype='int')
+#
+#    if n % 2:
+#        return ctBhalf[:, [i for i, mu in enumerate(typB._conjlabels(n))
+#                              if not len(mu[1]) % 2]]
+#    else:
+#        # Need the degenerate and non-degenerate conjugacy class indices.
+#        conjinds = {'deg' : [], 'nondeg' : []}
+#        for ind, mu in enumerate(typB._conjlabels(n)):
+#            if not len(mu[1]) % 2:
+#                if not mu[1] and all(not x % 2 for x in mu[0]):
+#                    conjinds['deg'].append(ind)
+#                else:
+#                    conjinds['nondeg'].append(ind)
+#
+#        e = n//2
+#        m = 2*d
+#        chartabdim = ctBhalf.shape[0] + d
+#        out = np.empty((chartabdim, chartabdim), dtype='int')
+#
+#        # First the totally nondegenerate part.
+#        out[:-m, :-m] = ctBhalf[:-d, conjinds['nondeg']]
+#
+#        # Non-degenerate characters on degenerate classes.
+#        out[:-m, -m::2] = ctBhalf[:-d, conjinds['deg']]
+#        out[:-m, -m+1::2] = ctBhalf[:-d, conjinds['deg']]
+#
+#        # Degenerate characters on non-degenerate classes.
+#        rows = ctBhalf[-d:, conjinds['nondeg']]//2
+#        out[-m::2, :-m], out[-m+1::2, :-m] = rows, rows
+#
+#        # Degenerate characters on degenerate classes. Let S = x_+ + x_- be the
+#        # sum of 2 degenerate characters, i.e., the restriction of a character
+#        # from B_n. We denote by D = x_+ - x_- the difference character. Clearly
+#        # we have
+#        #
+#        #   x_+(w) = (S(w) + D(w))//2       x_-(w) = (S(w) - D(w))//2
+#        #
+#        # The difference character is described in [Gec15]. Below D describes
+#        # the values D(w_+) on the positive classes. We then have
+#        # D(w_-) == -D(w_+).
+#        scal = np.array([(-1)**e*2**(len(part)-1) for part in
+#                                                        typA._conjlabels(e)])
+#        D = typA.chartable(e-1)*scal
+#        S = ctBhalf[-d:, conjinds['deg']]//2
+#
+#        plusD = S + D
+#        minusD = S - D
+#
+#        # Positive chars on pos then neg classes.
+#        out[-m::2, -m::2], out[-m::2, -m+1::2] = plusD, minusD
+#        
+#        # Negative chars on pos then neg classes.
+#        out[-m+1::2, -m::2], out[-m+1::2, -m+1::2] = minusD, plusD
+#        return out
+
 
 def chartable(n, **kwargs):
     ctBhalf, d = typB.chartablehalf(n)
 
     if n % 2:
-        return ctBhalf[:, [i for i, mu in enumerate(typB._conjlabels(n))
-                              if not len(mu[1]) % 2]]
+        # In this case we simply need to select the appropriate columns
+        # corresponding to the classes in the Weyl group of type D.
+        inds = [i for i, mu in enumerate(typB._conjlabels(n))
+                if not len(mu[1]) % 2]
+        return [[row[i] for i in inds] for row in ctBhalf]
+
     else:
         # Need the degenerate and non-degenerate conjugacy class indices.
         conjinds = {'deg' : [], 'nondeg' : []}
@@ -271,43 +354,50 @@ def chartable(n, **kwargs):
 
         e = n//2
         m = 2*d
-        chartabdim = ctBhalf.shape[0] + d
-        out = np.empty((chartabdim, chartabdim), dtype='int')
+        chartabdim = len(ctBhalf) + d
+        out = [None]*chartabdim
 
-        # First the totally nondegenerate part.
-        out[:-m, :-m] = ctBhalf[:-d, conjinds['nondeg']]
+        # First the non-degenerate characters. Note that on the
+        # degenerate classes the value is the same as the corresponding
+        # value in typeB.
+        out[:-m] = [[row[i] for i in conjinds['nondeg']]
+                    + list(itertools.chain.from_iterable(
+                        zip(*([row[i] for i in conjinds['deg']],)*2)))
+                    for row in ctBhalf[:-d]]
 
-        # Non-degenerate characters on degenerate classes.
-        out[:-m, -m::2] = ctBhalf[:-d, conjinds['deg']]
-        out[:-m, -m+1::2] = ctBhalf[:-d, conjinds['deg']]
+        # Degenerate characters on non-degenerate classes. We pad here
+        # with None type so that we can slice the lists below.
+        out[-m::2] = [[row[i]//2 for i in conjinds['nondeg']]
+                      + [None]*m
+                      for row in ctBhalf[-d:]]
+        out[-m+1::2] = [[row[i]//2 for i in conjinds['nondeg']]
+                        + [None]*m
+                        for row in ctBhalf[-d:]]
 
-        # Degenerate characters on non-degenerate classes.
-        rows = ctBhalf[-d:, conjinds['nondeg']]//2
-        out[-m::2, :-m], out[-m+1::2, :-m] = rows, rows
-
-        # Degenerate characters on degenerate classes. Let S = x_+ + x_- be the
-        # sum of 2 degenerate characters, i.e., the restriction of a character
-        # from B_n. We denote by D = x_+ - x_- the difference character. Clearly
-        # we have
+        # Degenerate characters on degenerate classes. Let S = x_+ + x_-
+        # be the sum of 2 degenerate characters, i.e., the restriction
+        # of a character from B_n. We denote by D = x_+ - x_- the
+        # difference character. Clearly we have
         #
         #   x_+(w) = (S(w) + D(w))//2       x_-(w) = (S(w) - D(w))//2
         #
-        # The difference character is described in [Gec15]. Below D describes
-        # the values D(w_+) on the positive classes. We then have
-        # D(w_-) == -D(w_+).
-        scal = np.array([(-1)**e*2**(len(part)-1) for part in
-                                                        typA._conjlabels(e)])
-        D = typA.chartable(e-1)*scal
-        S = ctBhalf[-d:, conjinds['deg']]//2
+        # The difference character is described in [Gec15]. Below D
+        # describes the values D(w_+) on the positive classes. We then
+        # have D(w_-) == -D(w_+).
+        scal = [(-1)**e*2**(len(part)-1) for part in typA._conjlabels(e)]
+        D = [[a*b for a, b in zip(row, scal)] for row in typA.chartable(e-1)]
+        S = [[row[i]//2 for i in conjinds['deg']] for row in ctBhalf[-d:]]
 
-        plusD = S + D
-        minusD = S - D
+        plusD = [[a + b for a, b in zip(*row)] for row in zip(S, D)]
+        minusD = [[a - b for a, b in zip(*row)] for row in zip(S, D)]
 
         # Positive chars on pos then neg classes.
-        out[-m::2, -m::2], out[-m::2, -m+1::2] = plusD, minusD
-        
+        for i, row in enumerate(out[-m::2]):
+            row[-m::2], row[-m+1::2] = plusD[i], minusD[i]
+
         # Negative chars on pos then neg classes.
-        out[-m+1::2, -m::2], out[-m+1::2, -m+1::2] = minusD, plusD
+        for i, row in enumerate(out[-m+1::2]):
+            row[-m::2], row[-m+1::2] = minusD[i], plusD[i]
         return out
 
 

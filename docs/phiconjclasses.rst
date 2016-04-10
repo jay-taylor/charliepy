@@ -1,5 +1,5 @@
 .. include:: global.rst
-.. currentmodule:: pycox.coxcos
+.. currentmodule:: charliepy.coxcos
 
 :math:`\phi`-Conjugacy Classes
 ==============================

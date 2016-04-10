@@ -8,7 +8,7 @@
 #               /                     \
 #           0 o                         o n
 
-from .. import utils as utils
+from .. import utils
 
 import numpy as np
 

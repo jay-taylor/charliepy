@@ -5,13 +5,20 @@
 #            0   1   2        n-1
 #            o---o---o-- ... --o
 
-from .. import utils as utils
+from .. import utils
+from .. import permutat
 from . import __USE_C__
 if __USE_C__:
     from . import _chartabs
 
 import numpy as np
 from collections import OrderedDict
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                          Cartan Matrix                             ##
+##                                                                    ##
 
 def cartanmat(n, **kwargs):
     """Takes a zero matrix and returns the type A_n Cartan matrix as a
@@ -29,16 +36,40 @@ def cartanmat(n, **kwargs):
         C[range(1,n), range(n-1)] = [-1]*(n-1)
         return C
 
+
+def rootlengths(n, **kwargs):
+    """
+    Returns a generator giving the relative root lengths.
+
+    """
+    return (1 for _ in range(n))
+
+
 def diagram(inds):
     """Prints the Dynkin diagram."""
     print("A{} :  ".format(len(inds)) + " - ".join(str(x) for x in inds))
     return None
 
+
 def degrees(n):
     return list(range(2, n+2))
 
+def longestword(inds):
+    n = len(inds) + 1
+    if n % 2:
+        return (inds[0::2] + inds[1::2])*(n//2) + inds[0::2]
+    else:
+        return (inds[0::2] + inds[1::2])*(n//2)
+
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                        Conjugacy Classes                           ##
+##                                                                    ##
+
 def _conjlabels(n):
-    # See clp.utils.combinat.partitions for more information concerning the
+    # See clp.utils.partitions for more information concerning the
     # algorithm.
     part = [1 for j in range(n)]
     i, m = -1, n
@@ -74,8 +105,84 @@ def _conjlabels(n):
             j += 1
         part[i] += 1
 
+
+def centraliser(mu):
+    """
+    Returns the order of the centraliser of an element of cycle type of a
+    given partition in the symmetric group. See [Pfe94, 1.2] for more details.
+
+    """
+    cent, last, k = 1, 0, 1
+    for x in mu:
+        cent *= x
+        if x == last:
+            k += 1
+            cent *= k
+        else:
+            k = 1
+        last = x
+
+    return cent
+
+def conjclasses(inds, **kwargs):
+    n = len(inds)
+
+    if not n:
+        return ([], 1, '()')
+
+    for mu in _conjlabels(n+1):
+        w, i = [], -1
+        c, last, k = 1, 0, 1
+        # The representative is simply a Coxter element in a parabolic subgroup
+        # of W labelled by the partition mu. As in GAP-CHEVIE this is a 'very
+        # good' representative as in [GM, Theorem 1.1].
+        for x in mu:
+            # This creates the representative.
+            w += inds[i+1:i+x:2] + inds[i+2:i+x:2]
+            i += x
+            
+            # This determines the centraliser order. See [Pfe94, 1.2].
+            c *= x
+            if x == last:
+                k += 1
+                c *= k
+            else:
+                k = 1
+            last = x
+
+        yield utils.intlisttostring(mu), c, w
+
+def conjclasses_min(ind, **kwargs):
+    n = len(ind)
+
+    if not n:
+        return ((1, '()'))
+
+    return ((utils.intlisttostring(mu), centraliser(mu))
+            for mu in _conjlabels(n+1))
+
+
+def wordtoclass(elm, inds, n):
+    """
+    Takes a word in the standard generators and returns the parameter of its
+    conjugacy class.
+
+    """
+    p = permutat.Perm(range(n + 1))
+    for i in elm:
+        p *= (i, i + 1)
+    return utils.intlisttostring(p.cycletype(True))
+
+
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                    Irreducible Characters                          ##
+##                                                                    ##
+
 def _charlabels(n):
-    # See clp.utils.combinat.partitions for more information concerning the
+    # See ..utils.partitions for more information concerning the
     # algorithm.
     part = [1 for j in range(n)]
     part[0] = n
@@ -108,48 +215,29 @@ def _charlabels(n):
 
     yield part
 
-def conjclassdata(ind, **kwargs):
-    # stores the data: representatives, centraliser orders, names
-    repcentnam = [[], [], []]
-    n = len(ind)
 
-    for mu in _conjlabels(n+1):
-        w = []
-        i = -1
-        # The representative is simply a Coxter element in a parabolic subgroup
-        # of W labelled by the partition mu. As in GAP-CHEVIE this is a 'very
-        # good' representative as in [GM, Theorem 1.1].
-        for x in mu:
-            w += ind[i+1:i+x:2] + ind[i+2:i+x:2]
-            i += x
-        repcentnam[0].append(w)
-
-        repcentnam[1].append(utils.centraliserpartition(n+1, mu))
-
-        if n > 0:
-            repcentnam[2].append(utils.intlisttostring(mu))
-        else:
-            repcentnam[2].append(' ')
-
-    return repcentnam
-
-def irrchardata(n, **kwargs):
-    if n == 0: 
-        nam = ['1']
-        ainv = [0]
-        binv = [0]
-
+def irrchars(n, **kwargs):
+    # For the a-value and b-value see 5.4.2, 5.4.4 of [GP00]. For the
+    # A-value we use 5.11.5 of [Lus84] to get that
+    #
+    #       A(mu) = N - a(mu*) = N - a*(mu)
+    #
+    # where N is the number of positive roots, mu* is the dual
+    # partition, and a*(mu) is as in 5.4.1 of [GP00].
+    if n:
+        N = n*(n+1)//2
+        for mu in _charlabels(n+1):
+            a = sum(i*val for i, val in enumerate(mu))
+            yield (utils.intlisttostring(mu), a, a)
     else:
-        # According to timeit this is faster than putting everything together
-        # in a single for loop and using list.append.
-        nam = list(map(utils.intlisttostring, _charlabels(n+1)))
-        ainv = [sum(i*val for i, val in enumerate(mu)) for mu in
-                _charlabels(n+1)]
+        yield ('()', 0, 0)
+     
+    # A-value : N - sum(val*(val-1) for val in mu)//2
 
-        return [nam, ainv, ainv[:]]
 
 def chartable(r, **kwargs):
-    """returns the character table of the irreducible Coxeter group of
+    """
+    returns the character table of the irreducible Coxeter group of
     type A_r, i.e., the symmetric group S_(r+1). The rows and columns
     are indexed by the partitons of r+1, as ordered in partitions(r+1).
     The function uses the fast algorithm constructed by Goetz Pfeiffer in
@@ -163,6 +251,7 @@ def chartable(r, **kwargs):
            [ 2,  0,  2, -1,  0],
            [ 3,  1, -1,  0, -1],
            [ 1,  1,  1,  1,  1]])               # trivial character
+
     """
     n = r+1
     scheme = inductionscheme(n)
@@ -170,7 +259,7 @@ def chartable(r, **kwargs):
     chartabdim = len(scheme[r])
 
     # Construct the character table to be filled.
-    out = np.empty((chartabdim, chartabdim), dtype='int')
+    out = [None]*chartabdim
 
     # Define how to construct a column of the character table of S_(m+1) from
     # the column t of the character table of S_(k+1).
@@ -204,15 +293,16 @@ def chartable(r, **kwargs):
     c = 0
     for k in range(r):
         for t in colsm[r-k-1]:
-            out[:,c] = charcol(scheme[r], t, k)
+            out[c] = charcol(scheme[r], t, k)
             c += 1
-    out[:,c] = charcol(scheme[r], [1], r)
+    out[c] = charcol(scheme[r], [1], r)
 
-    return out
+    return list(map(list, zip(*out)))
 
 
 def inductionscheme(n):
-    """This constructs an induction scheme following section 3 of
+    """
+    This constructs an induction scheme following section 3 of
     [Pfe94]. It returns a list of length n. Suppose alpha is a partition
     of 1 <= m <= n and i is the index of alpha in partitions(m). For all
     1 <= k <= m we have
@@ -224,6 +314,7 @@ def inductionscheme(n):
     alpha by removing a k-hook. The sign cmp(p,0) of p gives the leg
     parity of that hook.  Note that we must record the positions as
     non-zero integers to keep track of the leg parity.
+
     """
     # allparts stores all partitions. Note that allparts[m] stores the
     # partitions of m+1. Similarly for scheme.
@@ -276,3 +367,12 @@ def inductionscheme(n):
         scheme[i] = [hooks(beta, i) for beta in allparts[i].keys()]
     
     return scheme
+
+
+
+
+
+
+
+
+

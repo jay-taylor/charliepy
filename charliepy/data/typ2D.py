@@ -6,10 +6,11 @@
 # 0', ..., (n-1)' such that we have i' = i if
 # i > 1 and 0' = 1, 1' = 010.
 
-import itertools
 
-from .. import utils as utils
+from .. import utils
 from . import typ1B
+
+import itertools
 
 def conjclassdata(ind, **kwargs):
     """
@@ -17,15 +18,13 @@ def conjclassdata(ind, **kwargs):
     irreducible Weyl group of type D_n and phi is the unique graph automorphism
     of order 2. The data is adapted from the corresponding files in GAP-Chevie.
     """
-    # Stores the data: representatives, centraliser orders, names
-    repcentnam = [[],[],[]]
     n = len(ind)
 
     # We construct the reps w(alpha,beta).0 as in [GKP, 4.2] and [GP, 3.4.7].
-    for mu in utils.partitiontuplesgen(n,2):
+    for mu in typ1B._conjlabels(n):
         m = 0
         word = list()
-        if len(mu[1])%2:
+        if len(mu[1]) % 2:
             # mu[1] <-> neg blocks and mu[0] <-> pos blocks
             # so need mu[1] increasing and mu[0] decreasing
             for d in mu[1][::-1]:
@@ -43,53 +42,63 @@ def conjclassdata(ind, **kwargs):
                 word += ind[m+1:m+d]
                 m += d
 
-            repcentnam[0].append(word)
-            # phi-cent order is order of cent of w(alpha,beta) in W_n' 
-            repcentnam[1].append(utils.centralisertuple(n,2,mu)/2)
-            repcentnam[2].append(utils.parttupletostring(mu))
+            yield (
+                word,
+                utils.centralisertuple(n, 2, mu)//2,
+                utils.parttupletostring(mu)
+            )
+
         else:
             continue
 
-    return repcentnam
+def conjclassdata_min(ind, **kwargs):
+    n = len(ind)
+
+    for mu in typ1B._conjlabels(n):
+        if len(mu[1]) % 2:
+            yield (typ1B.centraliser(mu)//2, utils.parttupletostring(mu))
+        else:
+            continue
 
 def irrchardata(n, **kwargs):
-    return [[utils.parttupletostring(x)
-             for x in filter(testprefext, utils.partitiontuplesgen(n, 2))]]
+    return ((utils.parttupletostring(x), None, None)
+            for x in filter(testprefext, typ1B._charlabels(n)))
 
 def chartable(n, **kwargs):
     # Get the indices of the characters labelling the preferred extensions and
     # the non-degenerate conjugacy classes of type B_n.
-    exts = [x[0] for x in itertools.ifilter(testprefexttup,
-                            enumerate(utils.partitiontuplesgen(n, 2)))]
-    classes = [item[0] for item in itertools.ifilter(
-            lambda x: len(x[1][1])%2, enumerate(utils.partitiontuplesgen(n,2)))]
+    chars = [i for i, x in enumerate(typ1B._charlabels(n)) if testprefext(x)]
+    classes = [i for i, x in enumerate(typ1B._conjlabels(n))
+        if len(x[1]) % 2]
     
     # Return the appropriate slice of the character table of type B_n.
-    return typ1B.chartable(n)[exts,:][:,classes]
+    ctB = typ1B.chartable(n)
+    return [[ctB[i][j] for j in classes] for i in chars]
 
 #########################################
 ## Utility Functions
 ##
 
-def testprefexttup(tup, good=False):
-    return testprefext(tup[1], good)
-
-def testprefext(bipart, good=False):
-    """Tests if a bipartition represents the preferred extension of an
-    irreducible character of type D_n or not. If the optional flag good is set
-    to True then tests if the bipartition is Shoji's good extension.
+def testprefext(bipart):
     """
-    # Don't want to shred the input because we're going to print it.
-    dupe = [bipart[0][:], bipart[1][:]]
-    dlen = len(dupe[0]) - len(dupe[1])
-    dupe[1] += [0]*dlen
-    dupe[0] += [0]*(-dlen)
+    Returns True if bipart is a bipartition representing the preferred
+    extension of an irreducible character of type D_n and False
+    otherwise.
 
-    symb = [[val+i for i, val in enumerate(reversed(dupe[0]))],
-            [val+i for i, val in enumerate(reversed(dupe[1]))]]
-    
-    if good:
-        return symb[0] < symb[1]
+    """
+    # Assume (alpha; beta) is the bipartition we are considering with
+    #
+    #       alpha = (alpha_1, ..., alpha_s)
+    #       beta = (beta_1, ..., beta_t)
+    #
+    # If t < s then the reduced symbol associated to (alpha; beta) will
+    # have a 0 in the lower row but no 0 in the upper row. Thus this
+    # will label the preferred extension. Conversely if s < t then this
+    # will not label the preferred extension. Finally if s == t then the
+    # bipartition labels the preferred extension if and only if beta <
+    # alpha in the lexicographic ordering.
+    if len(bipart[0]) != len(bipart[1]):
+        return len(bipart[1]) < len(bipart[0])
     else:
-        return symb[1] < symb[0]
+        return bipart[1] < bipart[0]
 

@@ -1,7 +1,7 @@
 ########################################################
 # Data for type A~_n Coxeter groups
 
-from .. import utils as utils
+from .. import utils
 from . import typ1A
 
 import numpy as np

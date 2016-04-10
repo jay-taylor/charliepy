@@ -17,5 +17,6 @@ systems. A number preceeding a type denotes that we consider an automorphism
 of the root system of that order.
 
 .. toctree::
+   :maxdepth: 1
 
    typ1A

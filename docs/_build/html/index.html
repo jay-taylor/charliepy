@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>PyCox &mdash; PyCox 1.6.2 documentation</title>
+    <title>1. Welcome &mdash; CharLiePy 0.1.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/pycox.css" type="text/css" />
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.6.2',
+        VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,12 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/icon.ico"/>
-    <link rel="top" title="PyCox 1.6.2 documentation" href="#" /> 
+    <link rel="top" title="CharLiePy 0.1.0 documentation" href="#" />
+    <link rel="next" title="3. Coxeter Cosets" href="cosets.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,147 +39,97 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-<li>
-    <a href="#">PyCox Home</a>&nbsp;|
-</li>
-<li>
-    <a href="contents.html">Documentation</a>
-     &raquo;
-</li>
- 
+          <a href="cosets.html" title="3. Coxeter Cosets"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">CharLiePy Docs</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-<h1>Welcome</h1>
-
-<p>
-PyCox is a python package which implements algorithms to carry out symbolic
+  <div class="section" id="welcome">
+<h1>1. Welcome<a class="headerlink" href="#welcome" title="Permalink to this headline">¶</a></h1>
+<p>CharLiePy is a python package which implements algorithms to carry out symbolic
 computations with Coxeter groups and related mathematical structures. It may be
-considered as a Python version of the original <a target="_blank"
-href="http://www.math.rwth-aachen.de/~CHEVIE/">CHEVIE</a> package which was
-written in <a target="_blank" href="http://www.gap-system.org/Gap3/gap3.html">
-GAP3</a> and <a target="_blank" href="http://www.maplesoft.com/">MAPLE</a>.
-However, it also contains functionality which is not present in the original
-CHEVIE package. People familiar with CHEVIE will be quite at home using PyCox
-but a knowledge of CHEVIE is not necessary to use the software.
-</p>
-
-<h2 style="margin-bottom: 0">Documentation</h2>
-<table class="contentstable" align="center" style="margin-left: 30px">
-    <tr>
-    <td width="50%">
-        <p class="biglink">
-        <a class="biglink" href="tutorial.html">
-            User Documentation</a><br/>
-        <span class="linkdescr">
-            how to use the important functions of PyCox
-        </span>
-        </p>
-
-        <p class="biglink">
-        <a class="biglink" href="contents.html">
-            Developer Documentation</a><br/>
-        <span class="linkdescr">
-            complete PyCox documentation
-        </span>
-        </p>
-    </td>
-    <td width="50%">
-        <p class="biglink">
-        <a class="biglink" href="databook/databook.html">
-            Data Book</a><br/>
-        <span class="linkdescr">
-            data and conventions on types
-        </span>
-        </p>
-
-        <p class="biglink">
-        <a class="biglink" href="genindex.html">
-            General Index</a><br/>
-        <span class="linkdescr">
-            all functions, classes, terms
-        </span>
-        </p>
-    </td>
-    </tr>
-</table>
-
-<h2>Citing PyCox</h2>
-<p>
-If you use PyCox as part of a research project then you can reference the
-following article written by Geck.
-</p>
-
-<p style="width: 75%; float: center; margin: 0px auto;
-padding: 5px; border: 1px solid #000000;">
-M.&nbsp;Geck, <i><a target="_blank"
-href="http://dx.doi.org/10.1112/S1461157012001064">PyCox: computing with
-(finite) Coxeter groups and Iwahori-Hecke algebras</a></i>,
-LMS J. Comput. Math. <b>15</b> (2012), 231-256.
-</p>
-
-<p>
-You can of course also cite this documentation as a reference point for PyCox.
-If you have used PyCox for some research then please tell us about it by
-contacting one of the contributors!
-</p>
-
-<h2>Why Python?</h2>
-<p>
-One of the original reasons for choosing Python as the language for PyCox is
-the success of the
-<a target="_blank" href="http://www.sagemath.org/">Sage</a> project.
-In particular, PyCox may be used in Sage by simply importing PyCox in an
-interactive session. Here are some additional reasons:
-</p>
-
-<ul>
-    <li>
-    Python is very popular with the wider scientific community (see for
-    instance the <a target="_blank" href="http://www.scipy.org/">SciPy</a>
-    project).
-    </li>
-    <li>
-    It is easy to encorporate C extensions into Python, thus allowing one to
-    obtain speed advantages when needed.
-    </li>
-    <li>
-    As Python is a widely used modern programming language, anyone learning to
-    use PyCox for research will simultaneously gain a useful transferable
-    skill.
-    </li>
-    <li>
-    The Python language is syntactically similar to the <a target="_blank"
-    href="http://www.gap-system.org/Gap3/gap3.html">GAP3</a> language, on
-    which the original CHEVIE package was based. Thus it should not be
-    difficult for people to switch between the two languages.
-    </li>
+considered as a Python version of the original <a class="reference external" href="http://www.math.rwth-aachen.de/homes/CHEVIE/">CHEVIE</a> package which was
+written in <a class="reference external" href="http://www.gap-system.org/Gap3/gap3.html">GAP3</a> and MAPLE. People familiar with CHEVIE will be quite at home
+using CharLiePy but a knowledge of CHEVIE is not necessary to use the software.</p>
+<div class="section" id="citing-charliepy">
+<h2>Citing CharLiePy<a class="headerlink" href="#citing-charliepy" title="Permalink to this headline">¶</a></h2>
+<p>If you use CharLiePy as part of a research project then you can of course also
+cite this documentation as a reference point for CharLiePy.  If you have used
+CharLiePy for some research then please tell us about it by contacting one of
+the contributors!</p>
+</div>
+<div class="section" id="why-python">
+<h2>Why Python?<a class="headerlink" href="#why-python" title="Permalink to this headline">¶</a></h2>
+<p>One of the original reasons for choosing Python as the language for CharLiePy is
+the success of the <a class="reference external" href="http://www.sagemath.org/">Sage</a> project. In particular,
+CharLiePy may be used in Sage by simply importing CharLiePy in an interactive
+session. Here are some additional reasons:</p>
+<ul class="simple">
+<li>Python is very popular with the wider scientific community (see for instance
+the <a class="reference external" href="http://www.scipy.org/">SciPy</a> project).</li>
+<li>It is easy to encorporate C extensions into Python, thus allowing one to
+obtain speed advantages when needed.</li>
+<li>As Python is a widely used modern programming language, anyone learning to use
+CharLiePy for research will simultaneously gain a useful transferable skill.</li>
+<li>The Python language is syntactically similar to the <a class="reference external" href="http://www.gap-system.org/Gap3/gap3.html">GAP3</a> language, on which
+the original CHEVIE package was based. Thus it should not be difficult for
+people to switch between the two languages.</li>
 </ul>
+</div>
+</div>
+<div class="section" id="contents">
+<h1>2. Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cosets.html">3. Coxeter Cosets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phiconjclasses.html"><span class="math">\(\phi\)</span>-Conjugacy Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="databook/databook.html">4. Data Book</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="databook/typ1A.html">Type <span class="math">\(\mathrm{A}_n\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algebra.html">5. General Algebra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="permutations.html">Permutations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bib.html">6. References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bib.html#g">G</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bib.html#j">J</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bib.html#l">L</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">7. Glossary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html#coxeter-groups">Coxeter Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html#representation-theory">Representation Theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html#hecke-algebras">Hecke Algebras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html#combinatorics">Combinatorics</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-
-<p class="logo"><a href="#">
-<img class="logo" src="_static/logo.png" alt="PyCox"/>
-</a></p>
-
-<h3>Download</h3>
-<p>Current version: <b>1.6</b></p>
-<p>Get PyCox from the
-<a href="http://pypi.python.org/pypi/PyCox">Python Package Index</a>, or
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p><h3>Download</h3>
+<p>Current version: <b>0.1</b></p>
+<p>Get CharLiePy from the
+<a href="http://pypi.python.org/pypi/CharLiePy">Python Package Index</a>, or
 install it from the terminal with the command:</p>
-<pre>easy_install -U PyCox</pre>
+<pre>pip install charliepy</pre>
 
 <h3>Contributors</h3>
 <p>The following people contribute to the PyCox
@@ -186,20 +137,16 @@ project:</p>
 
 <ul>
     <li>
-        <a href="http://www.mathematik.uni-stuttgart.de/~geckmf/">
-            M.&nbsp;Geck</a> (Stuttgart)
-    </li>
-    <li>
-        <a href="http://www.mathematik.uni-kl.de/~taylor/index.html">
-            J.&nbsp;Taylor</a> (Kaiserslautern)
+        <a href="http://www.math.unipd.it/~taylor/">
+            J.&nbsp;Taylor</a> (Padova)
     </li>
 </ul>
 
 <p>
-If you have any questions concerning PyCox then please contact one of the
+If you have any questions concerning CharLiePy then please contact one of the
 contributors.
 </p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -216,7 +163,7 @@ contributors.
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -226,34 +173,15 @@ contributors.
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="np-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-<li>
-    <a href="#">PyCox Home</a>&nbsp;|
-</li>
-<li>
-    <a href="contents.html">Documentation</a>
-     &raquo;
-</li>
- 
+          <a href="cosets.html" title="3. Coxeter Cosets"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">CharLiePy Docs</a> &raquo;</li> 
       </ul>
     </div>
-<div class="footer">
-<span class="left">
-
-Last updated on Apr 27, 2014.
-
-</span>
-<span class="right">
-    
-    &copy; Copyright 2014, Meinolf Geck.
-    
-
-Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-1.2.2.&nbsp;&nbsp;
-
-</span>
-</div>
-
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Jay Taylor.
+      Last updated on Jan 27, 2016.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+    </div>
   </body>
 </html>

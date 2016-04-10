@@ -1,5 +1,5 @@
 .. include:: global.rst
-.. module:: pycox.coxcos
+.. module:: charliepy.coxcos
 
 Coxeter Cosets
 ==============
@@ -37,7 +37,7 @@ conjugacy classes and irreducible characters.
 
 The following class implements Coxeter cosets in PyCox.
 
-.. autoclass:: coset
+.. autoclass:: CoxeterCoset
 
 Other topics of interest include:
 

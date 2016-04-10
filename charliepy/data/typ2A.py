@@ -1,8 +1,8 @@
 ########################################################
 # Data for type 2A_n Coxeter groups and reductive groups
 
-from ..algebra import permutat
-from .. import utils as utils
+from .. import permutat
+from .. import utils
 from . import typ1A
 
 import numpy as np
@@ -12,8 +12,6 @@ def conjclassdata(ind, **kwargs):
     irreducible Weyl group of type A_n and phi is the unique graph automorphism
     of order 2. The data is adapted from the corresponding files in GAP-Chevie.
     """
-    # Stores the data: representatives, centraliser orders, names
-    repcentnam = [[],[],[]]
     n = len(ind)
 
     # This is an auxiliary function to determine a reduced word for a
@@ -25,11 +23,12 @@ def conjclassdata(ind, **kwargs):
     # smallest.
     def redword(w):
         s = 0
+        lim = w.degree - 1
         word = []
-        while s < w.deg-1:
-            if w.perm[s] > w.perm[s+1]:
+        while s < lim:
+            if s^w > (s+1)^w:
                 word.append(ind[s])
-                w.perm[s], w.perm[s+1] = w.perm[s+1], w.perm[s]
+                w = (s, s+1)*w
                 if s != 0:
                     s -= 1
                 else:
@@ -40,22 +39,21 @@ def conjclassdata(ind, **kwargs):
         return word
   
     # The longest word in S_(n+1) as a permutation 
-    w0 = permutat.perm(range(n,-1,-1))
+    w0 = permutat.Perm(range(n,-1,-1))
   
     # Construct helper list for constructing elements in stair case
     # form. Note that the indexing must be changed to reflect the fact
     # that we index from 0. In particular we have helper[i] is
     # a_(i+1) - 1 in the notation of [GKP] (for all i in range(n+1)),
     helper = [0]*(n+1)
-    helper[::2] = range((n+1)/2 + (n+1)%2)
-    helper[1::2] = [n-i for i in range((n+1)/2)]
+    helper[::2] = range((n+1)//2 + (n+1) % 2)
+    helper[1::2] = [n - i for i in range((n+1)//2)]
   
-    for mu in utils.partitions(n+1):
+    for mu in typ1A._conjlabels(n+1):
         # Make mu a maximal composition of n+1 following [GKP] then
         # construct an element in stair case form as in [GKP, 3.1]. We
         # assume that the partitions provided are weakly decreasing
         # (which they are).
-        repcentnam[2].append(utils.intlisttostring(mu))
         mu = ([x for x in mu if x%2 == 0] + [x for x in mu if x%2 == 1])
 
         lmu = len(mu)
@@ -72,16 +70,64 @@ def conjclassdata(ind, **kwargs):
         # lexicographically smallest reduced word. Note that w0*w and
         # w*w0 are conjuagte by w0, hence they have the same cycle type.
         w = w0*permutat.cyclestoperm(*w)
-  
+
         # Note that cycletype comes back as a sorted partition.
-        repcentnam[1].append(utils.centraliserpartition(n+1,
-                                permutat.cycletype(w, part=True)))
-        repcentnam[0].append(redword(w))
+        yield (
+            redword(w),
+            typ1A.centraliser(w.cycletype(True)),
+            utils.intlisttostring(mu)
+        )
+
+def conjclassdata_min(ind, **kwargs):
+    """ Returns the conjugacy class data for the coset W.phi where W is an
+    irreducible Weyl group of type A_n and phi is the unique graph automorphism
+    of order 2. The data is adapted from the corresponding files in GAP-Chevie.
+    """
+    n = len(ind)
   
-    return repcentnam
+    # The longest word in S_(n+1) as a permutation 
+    w0 = permutat.Perm(range(n,-1,-1))
+  
+    # Construct helper list for constructing elements in stair case
+    # form. Note that the indexing must be changed to reflect the fact
+    # that we index from 0. In particular we have helper[i] is
+    # a_(i+1) - 1 in the notation of [GKP] (for all i in range(n+1)),
+    helper = [0]*(n+1)
+    helper[::2] = range((n+1)//2 + (n+1) % 2)
+    helper[1::2] = [n - i for i in range((n+1)//2)]
+  
+    for mu in typ1A._conjlabels(n+1):
+        # Make mu a maximal composition of n+1 following [GKP] then
+        # construct an element in stair case form as in [GKP, 3.1]. We
+        # assume that the partitions provided are weakly decreasing
+        # (which they are).
+        mu = ([x for x in mu if x%2 == 0] + [x for x in mu if x%2 == 1])
+
+        lmu = len(mu)
+  
+        # Create the permutation in stair form.
+        w = [None]*lmu 
+        j = 0
+        for i in range(lmu):
+            w[i] = helper[j:j+mu[i]]
+            j += mu[i]
+
+        # We work with w0*w to compensate for the fact that our reduced
+        # word algorithm multiplies on the right. This means we get a
+        # lexicographically smallest reduced word. Note that w0*w and
+        # w*w0 are conjuagte by w0, hence they have the same cycle type.
+        w = w0*permutat.cyclestoperm(*w)
+
+        # Note that cycletype comes back as a sorted partition.
+        yield (
+            typ1A.centraliser(w.cycletype(True)),
+            utils.intlisttostring(mu)
+        )
+
 
 def irrchardata(n, **kwargs):
-    return [map(utils.intlisttostring, utils.partitions(n+1))]
+    return ((utils.intlisttostring(mu), None, None)
+            for mu in typ1A._charlabels(n+1))
 
 def chartable(n, **kwargs):
     # Here we use Lusztig's preferred extension defined in [L85, IV,
@@ -89,7 +135,6 @@ def chartable(n, **kwargs):
     # w(-1)^a_E. This involves multiplying all rows of the character
     # table by appropriate signs.
     chartabsplit = typ1A.chartable(n)
-    ainv = typ1A.irrchardata(n)[1]
-    sgn = np.array([[(-1)**a] for a in ainv], dtype='int')
-    return sgn*chartabsplit
-
+    signs = [(-1)**sum(i*val for i, val in enumerate(mu)) 
+             for mu in typ1A._charlabels(n + 1)]
+    return [[s*x for x in row] for s, row in zip(signs, chartabsplit)]

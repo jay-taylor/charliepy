@@ -6,7 +6,7 @@ G
 -
 .. [Gec12] M.\  Geck, `PyCox: computing with (finite) Coxeter groups and Iwahori-Hecke algebras <http://dx.doi.org/10.1112/S1461157012001064>`_, LMS J. Comput. Math. **15** (2012), 231-256.
 
-.. [GKP00] M.\  Geck, S.\  Kim and G.\  Pfeiffer, `Minimal length elements in twisted conjugacy classes of finite Coxeter groups <http://dx.doi.org/10.1006/jabr.1999.8253>`, J.\  Algebra **229** (2000), no.\ 2, 570-600.
+.. [GKP00] M.\  Geck, S.\  Kim and G.\  Pfeiffer, `Minimal length elements in twisted conjugacy classes of finite Coxeter groups <http://dx.doi.org/10.1006/jabr.1999.8253>`_, J.\  Algebra **229** (2000), no.\ 2, 570-600.
 
 .. [GM97] M.\  Geck and J.\  Michel, `"Good" elements in finite Coxeter groups and representations of Iwahori--Hecke algebras <http://dx.doi.org/10.1112/S0024611597000105>`_, Proc.\  London Math.\  Soc.\  (3) **74** (1997), no.\  2, 275-305.
 

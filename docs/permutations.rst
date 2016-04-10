@@ -1,5 +1,5 @@
 .. include:: global.rst
-.. module:: pycox.permutat
+.. module:: charliepy.algebra.permutat
 
 Permutations
 ============
@@ -29,7 +29,7 @@ permutations and those of GAP.
 
 Permutations are implemented through the following Python class.
 
-.. autoclass:: perm
+.. autoclass:: Perm
 
 Cycles
 ------
