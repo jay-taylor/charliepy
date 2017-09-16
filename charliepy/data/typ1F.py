@@ -7,6 +7,13 @@
 
 import numpy as np
 from . import rawdata as _rd
+from .. import permutat
+
+# We use the standard permutation generators below in class recognition.
+_F4permgens = [permutat.cyclestoperm(*_rd.F4permgens[0]),
+               permutat.cyclestoperm(*_rd.F4permgens[1]),
+               permutat.cyclestoperm(*_rd.F4permgens[2]),
+               permutat.cyclestoperm(*_rd.F4permgens[3])]
 
 def cartanmat(n):
     if n == 4:
@@ -36,10 +43,13 @@ def degrees(n):
 def longestword(inds):
     return [inds[k] for k in [0, 2, 1, 3]]*6
 
+def maxparachain(inds):
+    return [inds[i] for i in (1, 2, 0, 3)]
+
 def coxeterclasses(inds):
     return (
-        (nam, orblen, [inds[i] for i in rep])
-        for (nam, orblen, rep) in _rd.F4coxeterclasses
+        (nam, orblen, norm, [inds[i] for i in rep])
+        for (nam, orblen, norm, rep) in _rd.F4coxeterclasses
     )
 
 def conjclasses(inds, **kwargs):
@@ -50,6 +60,24 @@ def conjclasses(inds, **kwargs):
 
 def conjclasses_min(inds, **kwargs):
     return (cls[:2] for cls in _rd.F4conjclasses)
+
+def wordtoclass(n, w):
+    """
+    Returns the name of the conjugacy class in the Weyl group of type F_4
+    containing the element w given as a word in the standard generators.
+
+    """
+    # First convert the word to a permutation.
+    perm = permutat.Perm(range(48))
+    for i in w:
+        perm *= _F4permgens[i]
+
+    # Each class is uniquely determined by the pair of cycletypes of the
+    # restricted permutation on each orbit.
+    param = (permutat.restrictedperm(perm, _rd.F4rootorbits[0]).cyclestructure,
+             permutat.restrictedperm(perm, _rd.F4rootorbits[1]).cyclestructure)
+
+    return _rd.F4classparams[param]
 
 def irrchars(n, labels=(), **kwargs):
     if "kondo" in labels:

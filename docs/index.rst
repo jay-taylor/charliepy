@@ -11,9 +11,7 @@ using CharLiePy but a knowledge of CHEVIE is not necessary to use the software.
 Citing CharLiePy
 ----------------
 If you use CharLiePy as part of a research project then you can of course also
-cite this documentation as a reference point for CharLiePy.  If you have used
-CharLiePy for some research then please tell us about it by contacting one of
-the contributors!
+cite this documentation as a reference point for CharLiePy.
 
 Why Python?
 -----------

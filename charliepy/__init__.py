@@ -9,12 +9,17 @@ from . import permutat
 from .permutat import *
 from . import utils
 from .utils import *
+from . import braid
+from .braid import *
 from . import data
 
-# Call core first because chartab is dependent on core.
-from . import core
-from .core import *
+from . import coxeter
+from .coxeter import *
+from . import coset
+from .coset import *
+
 from . import conjclass
 from .conjclass import *
 from . import chartab
 from .chartab import *
+

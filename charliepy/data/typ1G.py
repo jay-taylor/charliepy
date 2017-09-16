@@ -10,6 +10,11 @@
 import numpy as np
 import math
 from . import rawdata as _rd
+from .. import permutat
+
+# We use the standard permutation generators below in class recognition.
+_G2permgens = [permutat.cyclestoperm(*_rd.G2permgens[0]),
+               permutat.cyclestoperm(*_rd.G2permgens[1])]
 
 def cartanmat(n):
     if n == 2:
@@ -37,6 +42,9 @@ def degrees(n):
 def longestword(inds):
     return [inds[0], inds[1]]*3
 
+def maxparachain(inds):
+    return inds
+
 def conjclasses(inds, **kwargs):
     return (
         (nam, cent, [inds[i] for i in rep])
@@ -45,6 +53,24 @@ def conjclasses(inds, **kwargs):
 
 def conjclasses_min(inds, **kwargs):
     return (cls[:2] for cls in _rd.G2conjclasses)
+
+def wordtoclass(n, w):
+    """
+    Returns the name of the conjugacy class in the Weyl group of type G_2
+    containing the element w given as a word in the standard generators.
+
+    """
+    # First convert the word to a permutation.
+    perm = permutat.Perm(range(12))
+    for i in w:
+        perm *= _G2permgens[i]
+
+    # Each class is uniquely determined by the pair of cycletypes of the
+    # restricted permutation on each orbit.
+    param = (permutat.restrictedperm(perm, _rd.G2rootorbits[0]).cyclestructure,
+             permutat.restrictedperm(perm, _rd.G2rootorbits[1]).cyclestructure)
+
+    return _rd.G2classparams[param]
 
 def irrchars(n, **kwargs):
     return (
@@ -57,8 +83,8 @@ def chartable(n, **kwargs):
 
 def coxeterclasses(inds):
     return (
-        (nam, orblen, [inds[i] for i in rep])
-        for (nam, orblen, rep) in _rd.G2coxeterclasses
+        (nam, orblen, norm, [inds[i] for i in rep])
+        for (nam, orblen, norm, rep) in _rd.G2coxeterclasses
     )
 
 

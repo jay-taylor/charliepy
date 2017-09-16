@@ -6,17 +6,21 @@
 #            o---o-- ... --o---o=>=o
 
 from .. import utils
+from .. import permutat
 from . import typ1A
-from . import __USE_C__
-if __USE_C__:
-    from . import _chartabs
+from . import _cdata
 
 import numpy as np
 import itertools
-import operator
+#import operator
 import collections
+#import multiprocessing as mp
 
-##### Cartan Matrices and Roots #####
+########################################################################
+########################################################################
+##                                                                    ##
+##                          Cartan Matrix                             ##
+##                                                                    ##
 
 def cartanmat(n):
     if n < 1:
@@ -54,7 +58,150 @@ def degrees(n):
 def longestword(inds):
     return (inds[0::2] + inds[1::2])*len(inds)
 
-##### Characters and Conjugacy Classes of Weyl Group #####
+def maxparachain(inds):
+    return inds
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                        Conjugacy Classes                           ##
+##                                                                    ##
+
+# We wish to split each partition of n into a bipartition. This is done
+# as follows. Let P = [k_1*1, k_2*2, ..., k_n*n] be the part count form
+# of a partition of n. Now assume [L, R] is a bipartition of n such that
+# the multiset of entries of L cup R is the same as that of P. We may
+# uniquely describe the bipartition [L, R] using the partcount form as
+#
+#       L = [l_1*1, l_2*2, ..., l_n*n]
+#       R = [r_1*1, r_2*2, ..., r_n*n]
+#
+# with l_i + r_i = k_i.
+#
+# All possible lists [l_1, ..., l_n] and [r_1, ..., r_n] are then
+# obtained by taking all the compositions of each number occuring in the
+# list [k_1, ..., k_n] into 2 parts.
+#
+# Pfeiffer's algorithm does this like an odometer. He starts with the
+# lists
+#
+#       L = [k_1, ..., k_n]
+#       R = [0, ..., 0]
+#
+# and then increases the rightmost term on each iteration. This is
+# exactly the behaviour of itertools.product, which we use here.  Note
+# however that in the end we must return our lists in reverse because we
+# want our partitions to be decreasing.
+def _conjlabels(n):
+    for part in typ1A._conjlabels(n):
+        pcount = collections.Counter(part)
+        # We aren't gauranteed that the elements of Counter are sorted.
+        entries = sorted(pcount)
+
+        def _bipartint(k):
+            for i in range(k + 1):
+                yield (k-i, i)
+
+        gen = (_bipartint(pcount[x]) for x in entries)
+        for item in itertools.product(*gen):
+            # Note that the generator produces items of the form
+            # ((l_1,r_1), ..., (l_n, r_n)). So we have to reverse the
+            # lists at the end.
+            lpart, rpart = [], []
+            for i, inds in enumerate(item):
+                lpart += (entries[i],)*inds[0]
+                rpart += (entries[i],)*inds[1]
+            yield [lpart[::-1], rpart[::-1]]
+
+def centraliser(mu):
+    """
+    returns the order of the centraliser of an element of a given type
+    (specified by an r-tuple of partitions mu) in the wreath product of a cyclic
+    group of order r with the full symmetric group of degree n. (The program is
+    taken from the GAP library and re-written almost 1-1 in python.)
+
+    """
+    cent = 1
+    for i in range(2):
+        last, k = 0, 1
+
+        for x in mu[i]:
+            cent *= 2*x
+            if x == last:
+                k += 1
+                cent *= k
+            else:
+                k = 1
+            last = x
+
+    return cent
+
+# For the representatives of the conjugacy classes we largely follow
+# section 3.4 of [GP00] but we have to make some slight modifications
+# because we have a different labelling of the Dynkin diagram. For any
+# integers m >= 0, d >= 1 we define
+#
+#   b^+(m, d) = m....(m+d-2)
+#
+# where the indices denote simple reflections. This is called a positive
+# block. We then define a negative block by setting
+#
+#   b^-(m, d) = m...(m+d-2)(m+d-1)...(n-2)(n-1)(n-2)...(m+d-1)
+#
+# Now assume (alpha;beta) is a bipartition labelling a class then we
+# have a representative for this class is given by the product of blocks
+#
+#   b^+(m_1,alpha_1)...b^+(m_k,alpha_k)b^-(n_1,beta_1)...b^-(n_l,beta_l)
+#
+# Here the m_i and the n_j simply sum all the proceeding parts of the
+# bipartitions that have come before.
+def conjclasses(inds, **kwargs):
+    n = len(inds)
+
+    for mu in _conjlabels(n):
+        alpha, beta = mu
+        w = []    
+        m = 0
+
+        for d in alpha:
+            # We make the representative very good by having it be a
+            # very good representative in the symmetric group (see
+            # typ1A).
+            w += inds[m:m+d-1:2] + inds[m+1:m+d-1:2]
+            m += d
+        for d in beta:
+            # Have to put a special case here because of the way Python
+            # interprets -1 in its slice notation.
+            if d == 1 and m == 0:
+                w += inds[m:] + inds[-2::-1]
+                m += d
+            else:
+                w += inds[m:] + inds[-2:m+d-2:-1]
+                m += d
+
+        yield utils.parttupletostring(mu), centraliser(mu), w
+
+def conjclasses_min(inds, **kwargs):
+    n = len(inds)
+
+    return ((utils.parttupletostring(mu), centraliser(mu))
+            for mu in _conjlabels(n))
+
+def wordtoclass(n, w):
+    """
+    Returns the name of the conjugacy class in the Weyl group of type B_n
+    containing the element w given as a word in the standard generators.
+
+    """
+    return utils.parttupletostring(_cdata.wordtoclassB(n, w))
+
+
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                    Irreducible Characters                          ##
+##                                                                    ##
 
 def _charlabels(n):
     # This produces all bipartitions. If L is the list of all
@@ -105,104 +252,6 @@ def _charlabelshalf(n):
         for i in range(allnrs[end]):
             yield [[end, i], [end, i]]
 
-def _conjlabels(n):
-    # We wish to split each partition of n into a bipartition. This is
-    # done as follows. Let P = [k_1*1, k_2*2, ..., k_n*n] be the part
-    # count form of a partition of n. Now assume [L, R] is a bipartition
-    # of n such that the multiset of entries of L cup R is the same as
-    # that of P. Then we may uniquely describe the bipartition [L, R]
-    # using the partcount form as
-    #
-    #       L = [l_1*1, l_2*2, ..., l_n*n]
-    #       R = [r_1*1, r_2*2, ..., r_n*n].
-    #
-    # All possible lists [l_1, ..., l_n] and [r_1, ..., r_n] are then
-    # obtained by taking all the compositions of each number [k_1, ...,
-    # k_n] into 2 parts.
-    #
-    # Pfeiffer's algorithm does this like an odometer. He starts with
-    # the lists
-    #
-    #       L = [k_1, ..., k_n]
-    #       R = [0, ..., 0]
-    #
-    # and then increases the rightmost term on each iteration. This is
-    # exactly the behaviour of itertools.product, which we use here.
-    # Note however that in the end we must return our lists in reverse
-    # because we want our partitions to be decreasing.
-    for part in typ1A._conjlabels(n):
-        pcount = collections.Counter(part)
-        # We aren't gauranteed that the elements of Counter are sorted.
-        entries = sorted(pcount)
-
-        def _bipartint(k):
-            for i in range(k + 1):
-                yield (k-i, i)
-
-        gen = (_bipartint(pcount[x]) for x in entries)
-        for item in itertools.product(*gen):
-            # Note that the generator produces items of the form
-            # ((l_1,r_1), ..., (l_n, r_n)). So we have to reverse the
-            # lists at the end.
-            lpart, rpart = [], []
-            for i, inds in enumerate(item):
-                lpart += (entries[i],)*inds[0]
-                rpart += (entries[i],)*inds[1]
-            yield [lpart[::-1], rpart[::-1]]
-
-def centraliser(mu):
-    """
-    returns the order of the centraliser of an element of a given type
-    (specified by an r-tuple of partitions mu) in the wreath product of a cyclic
-    group of order r with the full symmetric group of degree n. (The program is
-    taken from the GAP library and re-written almost 1-1 in python.)
-
-    """
-    cent = 1
-    for i in range(2):
-        last, k = 0, 1
-
-        for x in mu[i]:
-            cent *= 2*x
-            if x == last:
-                k += 1
-                cent *= k
-            else:
-                k = 1
-            last = x
-
-    return cent
-
-def conjclasses(inds, **kwargs):
-    n = len(inds)
-
-    # We construct the reps w(alpha, beta) as in [GP, 3.4.7].
-    for mu in _conjlabels(n):
-        w = []    
-        m = 0
-
-        # mu[1] <-> neg blocks and mu[0] <-> pos blocks so need mu[1]
-        # increasing and mu[0] decreasing. Note partitions from
-        # bipartitions(n) are decreasing.
-        for d in reversed(mu[1]):
-            # [GP, 3.4.2]: b^-(m, d) = m ... 101 ... m(m+1) ... (m+d-1)
-            w += inds[m::-1] + inds[1:m+d]
-            m += d
-        for d in mu[0]:
-            # We make the representative very good by having it be a
-            # very good representative in the symmetric group (see
-            # typ1A).
-            w += inds[m+1:m+d:2] + inds[m+2:m+d:2]
-            m += d
-
-        yield utils.parttupletostring(mu), centraliser(mu), w
-
-def conjclasses_min(inds, **kwargs):
-    n = len(inds)
-
-    return ((utils.parttupletostring(mu), centraliser(mu))
-            for mu in _conjlabels(n))
-
 def irrchars(n, **kwargs):
     # For the a-value and b-value see 6.4.3 and 5.5.3 of [GP00].
     for mu in _charlabels(n):
@@ -228,43 +277,42 @@ def chartablehalf(n, **kwargs):
     ncols = utils.nrbipartitions(n) 
     cthalf = [None]*ncols
 
-    # We now specify how to construct a new column of the character
-    # table of W_(m+1) from the column t of the character table of
-    # W_(k+1). Note the parameter p keeps track of whether we're adding
-    # to the column an unsigned, p = 0, or signed, p = 1, block. The
-    # parameter q denotes whether there are an even, q = 0, or odd, q =
-    # 1, number of signed blocks in the element of W_(k+1).
-    if __USE_C__:
-        charcol = _chartabs.charcolB
-    else:
-        def charcol(schm, t, k, p, q):
-            col = [None]*len(schm)
-            for ind, pi in enumerate(schm):
-                val = 0
-                for j, swp in pi[0][k]:
-                    if j < 0:
-                        if swp and q:
-                            val += t[-j-1]
-                        else:
-                            val -= t[-j-1]
-                    else:
-                        if swp and q:
-                            val -= t[j-1]
-                        else:
-                            val += t[j-1]
-                for j in pi[1][k]:
-                    if j < 0:
-                        if p:
-                            val += t[-j-1]
-                        else:
-                            val -= t[-j-1]
-                    else:
-                        if p:
-                            val -= t[j-1]
-                        else:
-                            val += t[j-1]
-                col[ind] = val
-            return col
+    charcol = _cdata.charcolB
+    
+    ## We now specify how to construct a new column of the character
+    ## table of W_(m+1) from the column t of the character table of
+    ## W_(k+1). Note the parameter p keeps track of whether we're adding
+    ## to the column an unsigned, p = 0, or signed, p = 1, block. The
+    ## parameter q denotes whether there are an even, q = 0, or odd, q =
+    ## 1, number of signed blocks in the element of W_(k+1).
+    #def charcol(schm, t, k, p, q):
+    #    col = [None]*len(schm)
+    #    for ind, pi in enumerate(schm):
+    #        val = 0
+    #        for j, swp in pi[0][k]:
+    #            if j < 0:
+    #                if swp and q:
+    #                    val += t[-j-1]
+    #                else:
+    #                    val -= t[-j-1]
+    #            else:
+    #                if swp and q:
+    #                    val -= t[j-1]
+    #                else:
+    #                    val += t[j-1]
+    #        for j in pi[1][k]:
+    #            if j < 0:
+    #                if p:
+    #                    val += t[-j-1]
+    #                else:
+    #                    val -= t[-j-1]
+    #            else:
+    #                if p:
+    #                    val -= t[j-1]
+    #                else:
+    #                    val += t[j-1]
+    #        col[ind] = val
+    #    return col
     
     # Now construct all the columns of the character table.
     cols = [[] for i in range(n-1)]
@@ -272,7 +320,7 @@ def chartablehalf(n, **kwargs):
     # First the m-cycle in all possible places, keeping track of where
     # you put it. The set contains all parts which have appeared on the
     # right hand side.  Once something has appeared on the right hand
-    # side it can only then be put on the right hand side, not the left.
+    # side it can then only be put on the right hand side, not the left.
     # The integer gives the parity of the number of signed blocks in the
     # representative.
     for k in range(n//2):
@@ -337,7 +385,6 @@ def chartable(n):
      
     return out
 
-
 # Be careful if changing the inductionscheme function below. The C
 # version of charcol relies on the specific format of the ouput from
 # inductionscheme.
@@ -347,7 +394,7 @@ def inductionscheme(n):
     nrparts = utils.nrpartitions(n, lessthan=True)
 
     # We store these values here as they will be used frequently by
-    # bipartind.  See the comments below for their meaning.
+    # bipartind. See the comments below for their meaning.
     cummul = [[None]*(m+1) for m in range(n+1)]
     for m in range(n+1):
         for a in range(m, m//2-1, -1):

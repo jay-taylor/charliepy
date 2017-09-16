@@ -20,6 +20,32 @@
 
 import numpy as np
 from . import rawdata as _rd
+from .. import permutat
+
+# We use the standard permutation generators below in class recognition.
+_E6permgens = [permutat.cyclestoperm(*_rd.E6permgens[0]),
+               permutat.cyclestoperm(*_rd.E6permgens[1]),
+               permutat.cyclestoperm(*_rd.E6permgens[2]),
+               permutat.cyclestoperm(*_rd.E6permgens[3]),
+               permutat.cyclestoperm(*_rd.E6permgens[4]),
+               permutat.cyclestoperm(*_rd.E6permgens[5])]
+
+_E7permgens = [permutat.cyclestoperm(*_rd.E7permgens[0]),
+               permutat.cyclestoperm(*_rd.E7permgens[1]),
+               permutat.cyclestoperm(*_rd.E7permgens[2]),
+               permutat.cyclestoperm(*_rd.E7permgens[3]),
+               permutat.cyclestoperm(*_rd.E7permgens[4]),
+               permutat.cyclestoperm(*_rd.E7permgens[5]),
+               permutat.cyclestoperm(*_rd.E7permgens[6])]
+
+_E8permgens = [permutat.cyclestoperm(*_rd.E8permgens[0]),
+               permutat.cyclestoperm(*_rd.E8permgens[1]),
+               permutat.cyclestoperm(*_rd.E8permgens[2]),
+               permutat.cyclestoperm(*_rd.E8permgens[3]),
+               permutat.cyclestoperm(*_rd.E8permgens[4]),
+               permutat.cyclestoperm(*_rd.E8permgens[5]),
+               permutat.cyclestoperm(*_rd.E8permgens[6]),
+               permutat.cyclestoperm(*_rd.E8permgens[7])]
 
 def cartanmat(n):
     if n == 6: 
@@ -88,22 +114,37 @@ def longestword(inds):
     if n == 8:
         return [inds[k] for k in [0, 3, 5, 7, 1, 2, 4, 6]]*15
 
+# We need this for computing conjugacy class labels.
+_E7longestperm = permutat.Perm(range(7))
+for i in longestword(list(range(7))): 
+    _E7longestperm *= _E7permgens[i]
+
+def maxparachain(inds):
+    n = len(inds)
+
+    if n == 6:
+        return [inds[i] for i in (2, 3, 4, 1, 0, 5)]
+    if n == 7:
+        return [inds[i] for i in (2, 3, 4, 1, 0, 5, 6)]
+    if n == 8:
+        return [inds[i] for i in (2, 3, 4, 1, 0, 5, 6, 7)]
+
 def coxeterclasses(inds):
     n = len(inds)
     if n == 6:
         return (
-            (nam, orblen, [inds[i] for i in rep])
-            for (nam, orblen, rep) in _rd.E6coxeterclasses
+            (nam, orblen, norm, [inds[i] for i in rep])
+            for (nam, orblen, norm, rep) in _rd.E6coxeterclasses
         )
     if n == 7:
         return (
-            (nam, orblen, [inds[i] for i in rep])
-            for (nam, orblen, rep) in _rd.E7coxeterclasses
+            (nam, orblen, norm, [inds[i] for i in rep])
+            for (nam, orblen, norm, rep) in _rd.E7coxeterclasses
         )
     if n == 8:
         return (
-            (nam, orblen, [inds[i] for i in rep])
-            for (nam, orblen, rep) in _rd.E8coxeterclasses
+            (nam, orblen, norm, [inds[i] for i in rep])
+            for (nam, orblen, norm, rep) in _rd.E8coxeterclasses
         )
 
 def conjclasses(inds, **kwargs):
@@ -132,6 +173,36 @@ def conjclasses_min(inds, **kwargs):
         return (cls[:2] for cls in _rd.E7conjclasses)
     if n == 8:
         return (cls[:2] for cls in _rd.E8conjclasses)
+
+def wordtoclass(n, w):
+    if n == 6:
+        # First convert the word to a permutation.
+        perm = permutat.Perm(range(72))
+        for i in w:
+            perm *= _E6permgens[i]
+
+        # Each class is uniquely determined by the cycletype of the permutation
+        # in the symmetric group on the roots.
+        return _rd.E6classparams[perm.cyclestructure]
+    if n == 7:
+        # First convert the word to a permutation.
+        perm = permutat.Perm(range(126))
+        for i in w:
+            perm *= _E7permgens[i]
+
+        # Each class is uniquely determined by the cycletype of the permutation
+        # in the symmetric group on the roots.
+        return _rd.E7classparams[(perm.cyclestructure,
+                                 (perm*_E7longestperm).cyclestructure)]
+    if n == 8:
+        # First convert the word to a permutation.
+        perm = permutat.Perm(range(240))
+        for i in w:
+            perm *= _E8permgens[i]
+
+        # Each class is uniquely determined by the cycletype of the permutation
+        # in the symmetric group on the roots.
+        return _rd.E8classparams[perm.cyclestructure]
 
 def irrchars(n, labels=(), **kwargs):
     if n == 6:

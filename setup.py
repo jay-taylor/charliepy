@@ -1,11 +1,13 @@
-from distutils.core import setup
-from distutils.core import Extension
+from setuptools import setup
+from setuptools.extension import Extension
 
 permutat = Extension(name = "charliepy.permutat",
-                     sources = ["src/permutat.c"],
-                     depends = ["src/permutat_mul_templates.c",
-                                "src/permutat_templates.c",
-                                "src/temputils.h"])
+                     sources = ["charliepy/src/permutat/permutat.c"],
+                     include_dirs = ["charliepy/include/"])
+
+cdata = Extension(name = "charliepy.data._cdata",
+                  sources = ["charliepy/data/src/_cdata.c"],
+                  include_dirs = ["charliepy/include/"])
 
 setup(name = 'charliepy',
       version = '0.1',
@@ -15,6 +17,6 @@ setup(name = 'charliepy',
       author = 'Jay Taylor',
       author_email = 'j.taylor.maths@gmail.com',
       license = 'GNU GPL',
-      packages = ['charliepy'],
-      ext_modules = [permutat],
+      packages = ['charliepy', 'charliepy.data'],
+      ext_modules = [permutat, cdata],
       zip_safe = False)

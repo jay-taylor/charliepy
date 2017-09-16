@@ -8,8 +8,8 @@
 #                                \
 #                                  o n-1
 #
-# Note that the labelling is consistent so that we have
-# the diagram of D_3 is given by
+# Note that the labelling is consistent when read from the right. This
+# means the digram of D_3 is given by
 #
 #                    1   0   2
 #                    o---o---o
@@ -24,11 +24,19 @@
 # 0 <= i < n-1 and (n-1) = (n-1)'(n-2)'(n-1)'.
 
 from .. import utils
+from .. import permutat
 from . import typ1A as typA
 from . import typ1B as typB
+from . import _cdata
 
 import numpy as np
 import itertools
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                          Cartan Matrix                             ##
+##                                                                    ##
 
 def cartanmat(n):
     if n < 2:
@@ -69,7 +77,7 @@ def diagram(inds):
     return None
 
 def degrees(n):
-    return list(range(2, 2*n+1, 2)) + [n]
+    return list(range(2, 2*n-1, 2)) + [n]
 
 def longestword(inds):
     n = len(inds)
@@ -77,29 +85,31 @@ def longestword(inds):
     L[n % 2].append(inds[-1])
     return (L[0] + L[1])*(n - 1)
 
+def maxparachain(inds):
+    n = len(inds)
+    
+    if n > 4:
+        return inds
+    elif n == 4:
+        return [inds[i] for i in (0, 2, 1, 3)]
+    elif n == 3:
+        return [inds[i] for i in (1, 0, 2)]
+    else:
+        return inds
 
-def _charlabels(n):
-    # The ordering here is such that the sum of the entries of the first
-    # partition is greater than or equal to the sum of the entries in the
-    # second partition.
-    end = n//2
-    for i in range(n, end, -1):
-        for pair in itertools.product(utils.partitions(i),
-                                      utils.partitions(n-i)):
-            yield list(pair)
-    if not n % 2:
-        for pair in itertools.combinations(utils.partitions(end), 2):
-            yield list(pair)
-        for part in utils.partitions(end):
-            yield [part, '+']
-            yield [part, '-']
+########################################################################
+########################################################################
+##                                                                    ##
+##                        Conjugacy Classes                           ##
+##                                                                    ##
 
 def _evenpartitions(n):
-    # For an even number n this produces all the even partitions of n, i.e., all
-    # partitions where every part is divisible by 2. The ordering of the
-    # partitions is the same as that produced by typA._conjlabels(n); the
-    # algorithm is essentially the same. However now we start with a list
-    # containing only 2s instead of only 1s. We also have:
+    # For an even number n this produces all the even partitions of n,
+    # i.e., all partitions where every part is divisible by 2. The
+    # ordering of the partitions is the same as that produced by
+    # typA._conjlabels(n); the algorithm is essentially the same.
+    # However now we start with a list containing only 2s instead of
+    # only 1s. We also have:
     #
     #   i - index of smallest entry != 2
     #   m - length of list.
@@ -145,14 +155,13 @@ def _conjlabels(n):
     #
     #    [[2*i for i in part] for part in typA._conjlabels(n//2)]
     #
-    # This is the list produced by _evenpartitions(n) which uses the same
-    # algorithm as for producing partitions.
+    # This is the list produced by _evenpartitions(n) which uses the
+    # same algorithm as for producing partitions.
 
-    # This produces all bipartitions. If L is the list of all bipartitions
-    # returned then the sublist L[::2] is ordered in graded reverse
-    # lexicographic ordering and the sublist L[1::2] is obtained from L[::2] by
-    # swapping the entries in the bipartition. The optional flag partinds gives
-    # the bipartitions by listing their indices in the sequence of partitions.
+    # This produces all bipartitions. If L is the list of all
+    # bipartitions returned then the sublist L[::2] is ordered in graded
+    # reverse lexicographic ordering and the sublist L[1::2] is obtained
+    # from L[::2] by swapping the entries in the bipartition.
     if not n % 2:
         for bpart in typB._conjlabels(n):
             if not len(bpart[1]) % 2 and (bpart[1]
@@ -166,31 +175,46 @@ def _conjlabels(n):
             if not len(bpart[1]) % 2:
                 yield bpart
 
+# As in [GP00] we get representatives of the classes in type Dn from
+# those of type Bn. Assume (alpha;beta) is a bipartition labelling a
+# class then the representative is given by
+#
+#   b^+(m_1,alpha_1)...b^+(m_k,alpha_k)b^-(n_1,beta_1)...b^-(n_l,beta_l)
+#
+# as before. Just as before we define the positive block to be
+#
+#   b^+(m, d) = m'...(m+d-2)' = m....(m+d-2)
+#
+# Here the ' notation denotes the embedding Dn -> Bn defined at the
+# beginning of this file. To get a word in the generators of Dn we write
+# each negative block in the form (n-1)'.w, with w a reduced expression
+# in the Dn generators. It's clear that the generator (n-1)' commutes
+# with all negative blocks except possibly the far most right negative
+# block. Hence, we obtain a reduced expression in the generators of Dn
+# by simply striking off the (n-1)' terms.
+#
+# The desired expression for the negative blocks is given as follows
+#
+#   b^-(m, d) = m'...(n-2)'(n-1)'(n-2)'...(m+d-1)'
+#             = (n-1)'m...(n-3)(n-1)(n-2)...(m+d-1)
+#
+# Note: One might be tempted to beautify the output by swapping the
+# terms (n-1) and (n-2) but this can only be done assuming we're not in
+# the last block. To avoid always having to treat the last block
+# differently we don't do this.
 def conjclasses(inds, **kwargs):
     n = len(inds)
 
     for mu in _conjlabels(n):
-        # We construct the reps w(alpha,beta) as in [GP00, 3.4.12]. This
-        # means mu[1] <-> neg blocks and mu[0] <-> pos blocks so need
-        # mu[1] increasing and mu[0] decreasing. Note partitions from
-        # _conjlabels(n) are decreasing. Also by [GP00, 3.4.12] a
-        # bipartition labels a class only if len(mu[1]) is even.
+        alpha, beta = mu
         w = []
         m = 0
 
-        if mu[1] == '+':
+        if beta == '+':
             # First build the + representative.
-            for d in mu[0]:
-                # We make the representative very good by having it be a very
-                # good representative in the symmetric group (see typ1A). 
-                if not m and d != 1:
-                    # b^+(0,d) = 1...(d-1) = 0'2'...(d-1)'
-                    # Need d != 1 test otherwise ind[0] is added not [].
-                    w += inds[0:1] + inds[3:d:2] + inds[2:d:2]
-                else:
-                    # b^+(m,d) = (m+1)...(m+d-1) = (m+1)'...(m+d-1)'
-                    # Note this does nothing when m = 0 and d = 1.
-                    w += inds[m+1:m+d:2] + inds[m+2:m+d:2]
+            for d in alpha:
+                # Very good in the symmetric group (see typ1A).
+                w += inds[m:m+d-1:2] + inds[m+1:m+d-1:2]
                 m += d
 
             c = typB.centraliser([mu[0], []])
@@ -201,36 +225,34 @@ def conjclasses(inds, **kwargs):
             # Now the - representative. Note we must make a copy of the
             # word otherwise we'll change what we've just yielded.
             w = w[:]
-            w[0] = inds[1]
+
+            # The - representative is obtained by flipping the generator
+            # n-2 in the word to n-1. This must occurr in the last
+            # segment of the word. Either it's at the end of the odd
+            # list (hence the end of the word) or the even list.
+            t = d - 2
+            if t % 2:
+                w[-1] = inds[-1]
+            else:
+                w[-t//2-1] = inds[-1]
 
             yield spart + '.-', c, w
 
-        elif isinstance(mu[1], list):
-            for d in reversed(mu[1]):
-                # As there is an even no. of neg. blocks, and 0's
-                # commute with blocks, we must simply write each block
-                # as b.0 and then strike off the 0's.
-                if not m and d != 1:
-                    # b^-(0,d) = 0...(d-1) = 1'...(d-1)'0
-                    # However, for cosmetics, we conjugate w, hence
-                    # b^-(0,d), by 0 so that the word starts with 0'
-                    # instead of 1'.
-                    w += inds[0:1] + inds[2:d]
-                elif m:
-                    # b^-(m,d) = m...101...(m+d-1)
-                    #          = m'...2'0'1'...(m+d-1)'0
-                    w += inds[m:1:-1] + inds[:m+d]
+        elif isinstance(beta, list):
+            for d in alpha:
+                # Very good in the symmetric group (see typ1A).
+                w += inds[m:m+d-1:2] + inds[m+1:m+d-1:2]
                 m += d
-
-            for d in mu[0]:
-                if not m and d != 1:
-                    # b^+(0,d) = 1...(d-1) = 0'2'...(d-1)'
-                    # Need d != 1 otherwise inds[0] is added not [].
-                    w += inds[0:1] + inds[3:d:2] + inds[2:d:2]
+            for d in beta:
+                # Note the block b^-(n-1, 1) = (n-1)' so we just delete
+                # this in this case.
+                if d == 1:
+                    if m == 0:
+                        w += inds[m:-2] + inds[-1::-1]
+                    elif m != n-1:
+                        w += inds[m:-2] + inds[-1:m+d-2:-1]
                 else:
-                    # b^+(m,d) = (m+1)...(m+d-1) = (m+1)'...(m+d-1)'
-                    # Note this does nothing when m = 0 and d = 1.
-                    w += inds[m+1:m+d:2] + inds[m+2:m+d:2]
+                    w += inds[m:-2] + inds[-1:m+d-2:-1]
                 m += d
 
             yield utils.parttupletostring(mu), typB.centraliser(mu)//2, w
@@ -248,6 +270,108 @@ def conjclasses_min(inds, **kwargs):
 
         elif isinstance(mu[1], list):
             yield utils.parttupletostring(mu), typB.centraliser(mu)//2
+
+def wordtoclass(n, w):
+    """
+    Returns the name of the conjugacy class in the Weyl group of type D_n
+    containing the element w given as a word in the standard generators.
+
+    """
+    lab = _cdata.wordtoclassD(n, w)
+    
+    if isinstance(lab[1], tuple):
+        return utils.parttupletostring(lab)
+    else:
+        return "{0}.{1}".format(utils.intlisttostring(lab[0]), lab[1])
+
+#def wordtoclass(n, elm):
+#    # We use the following representation of the Weyl group of type D_n
+#    # into S_{2n}. If s_0, ..., s_{n-1} are the generators then we have
+#    #
+#    #       s_i -> (i, i+1)(N-i, N-i-1) if i = 0, ..., n-2
+#    #   s_{n-1} -> (n-2, n)(n-1, n+1)
+#    #
+#    # Here N = 2n-1. This is compatible with our embedding of the type
+#    # B_n Weyl group.
+#    N = 2*n - 1
+#    p = permutat.Perm(range(2*n))
+#    for i in elm:
+#        if i == n-1:
+#            p *= (n-2, n)
+#            p *= (n-1, n+1)
+#        else:
+#            p *= (i, i+1)
+#            p *= (N-i, N-i-1)
+#
+#    # Get the B_n label first.
+#    seen = list(range(n))
+#    pos, neg = [], []
+#    for i in range(n):
+#        if seen[i] is not None:
+#            cyc = p.cycle(i)
+#            if N-i in cyc:
+#                neg.append(len(cyc)//2)
+#            else:
+#                pos.append(len(cyc))
+#        for j in cyc:
+#            if j >= n:
+#                seen[N-j] = None
+#            else:
+#                seen[j] = None
+#
+#    if neg or any(i % 2 for i in pos):
+#        return (tuple(sorted(pos, reverse=True)),
+#                tuple(sorted(neg, reverse=True)))
+#    else:
+#        # We now need to work out whether with have a + class or a -
+#        # class. We start by finding an element x of the Weyl group of
+#        # type B_n which conjugates p to an element of the + copy of
+#        # S_n. Such an element must exist. If x lies in D_n then we have
+#        # a + element. If x doesn't lie in D_n then s_{n-1}*x does but
+#        # s_{n-1} sends a + element to a - element, so in that case it's
+#        # a minus element. As the D_n subgroup is obtained by
+#        # intersecting the B_n subgroup with the alternating group
+#        # A_{2n} < S_{2n} we need only look at the parity of the
+#        # permutation to determine whether it's in D_n or not.
+#        sgn = 1
+#        flag = True
+#        while flag:
+#            flag = False
+#            for i in range(n):
+#                j = i^p
+#                if j >= n:
+#                    p = (j, N-j)*p*(j,N-j)
+#                    sgn *= -1
+#                    flag = True
+#                    break
+#
+#        if sgn == 1:
+#            return (tuple(sorted(pos, reverse=True)), "+")
+#        else:
+#            return (tuple(sorted(pos, reverse=True)), "-")
+
+
+########################################################################
+########################################################################
+##                                                                    ##
+##                    Irreducible Characters                          ##
+##                                                                    ##
+
+def _charlabels(n):
+    # The ordering here is such that the sum of the entries of the first
+    # partition is greater than or equal to the sum of the entries in the
+    # second partition.
+    end = n//2
+    for i in range(n, end, -1):
+        for pair in itertools.product(utils.partitions(i),
+                                      utils.partitions(n-i)):
+            yield list(pair)
+    if not n % 2:
+        for pair in itertools.combinations(utils.partitions(end), 2):
+            yield list(pair)
+        for part in utils.partitions(end):
+            yield [part, '+']
+            yield [part, '-']
 
 def irrchars(n, **kwargs):
     for mu in _charlabels(n):
@@ -270,67 +394,6 @@ def irrchars(n, **kwargs):
                     + 2*sum(i*val for i, val in enumerate(mu[1]))
                     + sum(mu[1])
             )
-
-
-#def chartableold(n, **kwargs):
-#    ctBhalf, d = typB.chartablehalf(n)
-#
-#    ctBhalf = np.array(ctBhalf, dtype='int')
-#
-#    if n % 2:
-#        return ctBhalf[:, [i for i, mu in enumerate(typB._conjlabels(n))
-#                              if not len(mu[1]) % 2]]
-#    else:
-#        # Need the degenerate and non-degenerate conjugacy class indices.
-#        conjinds = {'deg' : [], 'nondeg' : []}
-#        for ind, mu in enumerate(typB._conjlabels(n)):
-#            if not len(mu[1]) % 2:
-#                if not mu[1] and all(not x % 2 for x in mu[0]):
-#                    conjinds['deg'].append(ind)
-#                else:
-#                    conjinds['nondeg'].append(ind)
-#
-#        e = n//2
-#        m = 2*d
-#        chartabdim = ctBhalf.shape[0] + d
-#        out = np.empty((chartabdim, chartabdim), dtype='int')
-#
-#        # First the totally nondegenerate part.
-#        out[:-m, :-m] = ctBhalf[:-d, conjinds['nondeg']]
-#
-#        # Non-degenerate characters on degenerate classes.
-#        out[:-m, -m::2] = ctBhalf[:-d, conjinds['deg']]
-#        out[:-m, -m+1::2] = ctBhalf[:-d, conjinds['deg']]
-#
-#        # Degenerate characters on non-degenerate classes.
-#        rows = ctBhalf[-d:, conjinds['nondeg']]//2
-#        out[-m::2, :-m], out[-m+1::2, :-m] = rows, rows
-#
-#        # Degenerate characters on degenerate classes. Let S = x_+ + x_- be the
-#        # sum of 2 degenerate characters, i.e., the restriction of a character
-#        # from B_n. We denote by D = x_+ - x_- the difference character. Clearly
-#        # we have
-#        #
-#        #   x_+(w) = (S(w) + D(w))//2       x_-(w) = (S(w) - D(w))//2
-#        #
-#        # The difference character is described in [Gec15]. Below D describes
-#        # the values D(w_+) on the positive classes. We then have
-#        # D(w_-) == -D(w_+).
-#        scal = np.array([(-1)**e*2**(len(part)-1) for part in
-#                                                        typA._conjlabels(e)])
-#        D = typA.chartable(e-1)*scal
-#        S = ctBhalf[-d:, conjinds['deg']]//2
-#
-#        plusD = S + D
-#        minusD = S - D
-#
-#        # Positive chars on pos then neg classes.
-#        out[-m::2, -m::2], out[-m::2, -m+1::2] = plusD, minusD
-#        
-#        # Negative chars on pos then neg classes.
-#        out[-m+1::2, -m::2], out[-m+1::2, -m+1::2] = minusD, plusD
-#        return out
-
 
 def chartable(n, **kwargs):
     ctBhalf, d = typB.chartablehalf(n)

@@ -2,7 +2,7 @@
 # Data for type 2I_2(m) Coxeter groups
 #
 
-def conjclassdata(ind, **kwargs):
+def conjclasses(ind, **kwargs):
     """
     Returns the conjugacy class data for the coset W.phi where W is an
     irreducible Weyl group of type I_2(m) and phi is the unique graph

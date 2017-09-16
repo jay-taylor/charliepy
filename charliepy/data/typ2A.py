@@ -7,7 +7,7 @@ from . import typ1A
 
 import numpy as np
 
-def conjclassdata(ind, **kwargs):
+def conjclasses(ind, **kwargs):
     """ Returns the conjugacy class data for the coset W.phi where W is an
     irreducible Weyl group of type A_n and phi is the unique graph automorphism
     of order 2. The data is adapted from the corresponding files in GAP-Chevie.
@@ -73,12 +73,12 @@ def conjclassdata(ind, **kwargs):
 
         # Note that cycletype comes back as a sorted partition.
         yield (
-            redword(w),
-            typ1A.centraliser(w.cycletype(True)),
-            utils.intlisttostring(mu)
+            utils.intlisttostring(mu),
+            typ1A.centraliser(w.cycletype),
+            redword(w)
         )
 
-def conjclassdata_min(ind, **kwargs):
+def conjclasses_min(ind, **kwargs):
     """ Returns the conjugacy class data for the coset W.phi where W is an
     irreducible Weyl group of type A_n and phi is the unique graph automorphism
     of order 2. The data is adapted from the corresponding files in GAP-Chevie.
@@ -120,12 +120,12 @@ def conjclassdata_min(ind, **kwargs):
 
         # Note that cycletype comes back as a sorted partition.
         yield (
-            typ1A.centraliser(w.cycletype(True)),
-            utils.intlisttostring(mu)
+            utils.intlisttostring(mu),
+            typ1A.centraliser(w.cycletype)
         )
 
 
-def irrchardata(n, **kwargs):
+def irrchars(n, **kwargs):
     return ((utils.intlisttostring(mu), None, None)
             for mu in typ1A._charlabels(n+1))
 

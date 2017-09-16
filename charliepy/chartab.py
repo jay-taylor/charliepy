@@ -1,16 +1,15 @@
-from . import core
+from . import coxeter
+from . import coset
 from . import permutat
 from . import utils
 from . import conjclass
 
-import sys
-import itertools
-import functools
-import operator
-import collections
 import numpy as np
+import itertools
+import collections
 
-__all__ = ['CharacterTable']
+__all__ = ['CharacterTable',
+           'Character']
 
 
 ########################################################################
@@ -20,7 +19,7 @@ __all__ = ['CharacterTable']
 ##                                                                    ##
 
 class Character(collections.namedtuple("Character",
-            ["parent", "name", "param", "degree", "a", "b"])):
+            ["parent", "name", "a", "b", "values"])):
     # Setting slots to an empty tuple prevents a dict for the class
     # being created.
     __slots__ = () 
@@ -28,9 +27,9 @@ class Character(collections.namedtuple("Character",
         return "Character( {}, {} )".format(self.parent,
                                             self.name)
 
-    @property
-    def length(self):
-        return self.parent.size//self.centsize
+    #@property
+    #def length(self):
+    #    return self.parent.size//self.centsize
 
 class CharacterTable:
     """
@@ -95,7 +94,7 @@ class CharacterTable:
         # Get the conjugacy classes first.
         self.classes = conjclass.conjugacyclasses(W)
 
-        if isinstance(W, core.CoxeterGroup):
+        if isinstance(W, coxeter.CoxeterGroup):
             # We treat the irreducible case differently because it's simpler.
             if len(W.cartantype) == 1:
                 typ, inds = W.cartantype[0]
@@ -139,41 +138,34 @@ class CharacterTable:
                     self.b.append(sum(b))
 
                 # Finally the values of the irreducible characters.
-                typ, inds = self.parent.cartantype[0]
+                typ, inds = W.cartantype[0]
                 mat = utils.getmodule(typ).chartable(len(inds))
 
                 # Take the successive tensor product with all remaining
                 # character tables.
                 for (typ, inds) in W.cartantype[1:]:
-                    new =  utils.getmodule(typ).chartable(len(inds))
+                    new = utils.getmodule(typ).chartable(len(inds))
                     mat = [[a*b for a, b in itertools.product(mrow, nrow)]
                            for mrow, nrow in itertools.product(mat, new)]
 
                 self.irreducibles = mat
 
-        elif isinstance(self.parent, core.CoxeterCoset):
+        elif isinstance(W, coset.CoxeterCoset):
             # We treat the irreducible case differently because it's simpler.
-            if len(self.parent.phitype) == 1:
+            if len(W.phitype) == 1:
+                typ, inds, phi = W.phitype[0]
+                n = len(inds)
+
                 # Get the correct module from the data package for the
                 # irreducible factor.
-                module = sys.modules[
-                    'charliepy.data.typ{}{}'.format(
-                        self.parent.phitype[0][2],
-                        self.parent.phitype[0][0])]
-                inds = self.parent.phitype[0][1]
+                mod = utils.getmodule(typ, phi.order)
 
-                # First the conjugacy class data.
-                self.classnames, self.centralisers = list(
-                    zip(*module.conjclasses_min(inds)))
-
-                # Now the irreducible character data. We don't need the
+                # Irreducible character data. We don't need the
                 # a-values and b-values for cosets.
-                self.charnames, a, b = list(
-                    zip(*module.irrchars(len(inds))))
-                del a, b
+                self.charnames, a, b = zip(*mod.irrchars(n))
 
                 # Finally the irreducible characters.
-                self.irreducibles = module.chartable(len(inds))
+                self.irreducibles = mod.chartable(n)
 
             else:
                 names, avals, bvals = [], [], []
@@ -189,50 +181,21 @@ class CharacterTable:
                 # to zip then puts all of this information together into a
                 # single tuple.
 
-                # First the conjugacy class data.
-                gen = (zip(*elm) for elm in 
-                    itertools.product(*(
-                        sys.modules[
-                            'charliepy.data.typ{}{}'.format(
-                                typ[2].order, typ[0])
-                        ].conjclasses_min(typ[1])
-                        for typ in self.parent.phitype)))
+                # Irreducible character data.
+                gen = (zip(*elm) for elm in itertools.product(
+                       *(utils.getmodule(typ, phi.order).irrchars(len(inds))
+                           for (typ, inds, phi) in W.phitype)))
 
-                self.classnames, self.centralisers = [], []
-
-                for name, cent in gen:
-                    self.classnames.append(','.join(name))
-                    self.centralisers.append(cent)
-
-                # Now the irreducible character data.
-                gen = (zip(*elm) for elm in 
-                    itertools.product(*(
-                        sys.modules[
-                            'charliepy.data.typ{}{}'.format(
-                                typ[2].order, typ[0])
-                        ].irrchars(len(typ[1]))
-                        for typ in self.parent.phitype)))
-
-                self.charnames = []
-
-                for name, a, b in gen:
-                    self.charnames.append(",".join(name))
+                self.charnames = list(','.join(name) for name, a, b in gen)
 
                 # Finally the values of the irreducible characters.
-                typ = self.parent.phitype[0]
-                mat = sys.modules[
-                    'charliepy.data.typ{}{}'.format(
-                        typ[2].order, typ[0])
-                ].chartable(len(typ[1]))
+                (typ, inds, phi) = W.phitype[0]
+                mat = utils.getmodule(typ).chartable(len(inds))
 
-                # Take the successive kronecker product with all
-                # remaining ones. Note that the definition of the
-                # Kronecker product in numpy is compatible with the
-                # Cartesian product defined in itertools.
-                for typ in self.parent.phitype[1:]:
-                    new =  sys.modules[
-                        'charliepy.data.typ{}{}'.format(typ[2].order, typ[0])
-                    ].chartable(len(typ[1]))
+                # Take the successive tensor product with all remaining
+                # character tables.
+                for (typ, inds, phi) in W.phitype[1:]:
+                    new = utils.getmodule(typ, phi.order).chartable(len(inds))
                     mat = [[a*b for a, b in itertools.product(mrow, nrow)]
                            for mrow, nrow in itertools.product(mat, new)]
 
@@ -256,8 +219,6 @@ class CharacterTable:
     @property
     def classnames(self):
         return [cls.name for cls in self.classes]
-
-
 
     def isconsistent(self):
         """
@@ -291,13 +252,157 @@ class CharacterTable:
 
         return True
 
-
-
-class InductionTable:
+def inducecharacter(chi, H, W):
     """
-    Takes as input the table of a 
+    Induce the character chi of the subgroup H to W.
 
     """
-    pass
+    Hclasses = conjclass.conjugacyclasses(H)
+    Wclasses = conjclass.conjugacyclasses(W)
+
+    # Get the fusion of the conjugacy classes of H into W. This will raise an
+    # error if H.embeddings[W] is undefined.
+    fusion = conjclass.fusionclasses(H, W)
+
+    # Construct the induced character I = Ind_H^W(chi).
+    indchar = [0]*len(Wclasses)
+    for i, j in enumerate(fusion):
+        indchar[j] += (Wclasses[j].centsize*chi[i])//Hclasses[i].centsize
+
+    return indchar
+
+def restrictcharacter(chi, H, W):
+    """
+    Restrict the character chi to the subgroup H of W.
+
+    """
+    Hclasses = conjclass.conjugacyclasses(H)
+    Wclasses = conjclass.conjugacyclasses(W)
+
+    # Get the fusion of the conjugacy classes of H into W. This will raise an
+    # error if H.embeddings[W] is undefined.
+    fusion = conjclass.fusionclasses(H, W)
+
+    # Construct the restricted character R = Res_H^W(chi).
+    reschar = [None]*len(Hclasses)
+    for i, j in enumerate(fusion):
+        reschar[i] = chi[j]
+
+    return reschar
+
+def inducedecompose(chi, S, T):
+    """
+    Induce the character chi from a subgroup H to W and decompose the induced
+    character into irreducible constituents.
+
+    """
+    H = S.parent
+    W = T.parent
+
+    Hclasses = S.classes
+    Wclasses = T.classes
+
+    # Get the fusion of the conjugacy classes of H into W. This will raise an
+    # error if H.embeddings[W] is undefined.
+    fusion = conjclass.fusionclasses(H, W)
+
+    # Construct the induced character I = Ind_H^W(chi).
+    Ichar = [0]*len(Wclasses)
+    for i, j in enumerate(fusion):
+        Ichar[j] += (Wclasses[j].centsize*chi[i])//Hclasses[i].centsize
+
+    res = [0]*len(Wclasses)
+
+    # Degree of Ind_H^W(chi).
+    d = (W.size*chi[0])//H.size
+    for i, psi in enumerate(T.irreducibles):
+        if psi[0] <= d:
+            mult = 0
+            for j, (a, b) in enumerate(zip(Ichar, psi)):
+                mult += (W.size*a*b)//Wclasses[j].centsize
+            mult = mult//W.size
+            if mult:
+                res[i] = mult
+                d -= mult*psi[0]
+                if not d:
+                    break
+
+    return res
+
+
+def inductiontable(S, T):
+    """
+    Takes as input the character table S of a group H and the character table
+    T of a group W for which H.embeddings[W] is defined. What is produced is a
+    matrix of multiplicites decomposing the induced characters of H into
+    irreducible constituents.
+
+    """
+    H = S.parent
+    W = T.parent
+    Hclasses = S.classes
+    Wclasses = T.classes
+
+    # Get the fusion of the conjugacy classes of H into W. This will raise an
+    # error if H.embeddings[W] is undefined.
+    fusion = conjclass.fusionclasses(H, W)
+    splitting = []
+
+    # We need to know how the classes of W split upon restriction to H. The only
+    # classes of W we consider are those whose intersection with H is non-empty.
+    # If the intersection is empty then the corresponding value of the induced
+    # character will be 0.
+    for i in range(len(Wclasses)):
+        tmp = [j for j, y in enumerate(fusion) if y == i]
+        if tmp:
+            splitting.append([i, tmp])
+
+
+    index = W.size//H.size
+
+    res = [[0]*len(Wclasses) for _ in range(len(Hclasses))]
+
+    # Now get the multiplicities. Assume chi is an irreducible character of H
+    # and psi is an irreducible character of W. Set I = Ind_H^W(chi) then the
+    # multiplicity of psi in I is computed by the formula
+    #
+    # <I, psi> = \sum_{[w]} I(w)psi(w)/|C_W(w)| 
+    #
+    # where the sum is over all the W-conjugacy classes; note the character
+    # values are integers here. The values of I are given by the formula 
+    #
+    # I(w) = |C_W(w)|\sum_{[x]} chi(x)/|C_H(x)|
+    #
+    # Here the sum is over all the H-conjugacy classes contained in the
+    # W-conjugacy class containing w. This means we can write this as
+    #
+    # <I, psi> = 1/|W|\sum_{[w]} psi(w)(\sum_{[x]} |W|chi(x)/|C_H(x)|).
+    #
+    # By arranging things in this way we avoid integer division errors because
+    # |C_H(x)| divides |W|.
+    for i, chi in enumerate(S.irreducibles):
+        # Degree of Ind_H^W(chi).
+        d = index*chi[0]
+        for j, psi in enumerate(T.irreducibles):
+            if psi[0] > d:
+                continue
+            else:
+                mult = sum(sum((W.size*chi[a])//Hclasses[a].centsize
+                                for a in inds)*psi[k]
+                                    for k, inds in splitting)//W.size
+                if mult:
+                    res[i][j] = mult
+                    d -= mult*psi[0]
+                    if not d:
+                        break
+
+    return res
+
+
+
+
+
+
+
 
 

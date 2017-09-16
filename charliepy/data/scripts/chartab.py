@@ -26,6 +26,7 @@
 import charliepy as clp
 import numpy as np
 import collections
+import operator
 import textwrap
 import G2ctab, F4ctab, E6ctab, E7ctab, E8ctab
 
@@ -35,6 +36,7 @@ import G2ctab, F4ctab, E6ctab, E7ctab, E8ctab
 ##                                                                       ##
 ##                         Auxiliiary Functions                          ##
 ##                                                                       ##
+###########################################################################
 def identifycoxclass(H, C, J):
     """
     Returns representatives of the Coxeter classes as defined in [GP00]. Each
@@ -54,10 +56,10 @@ def identifycoxclass(H, C, J):
 
     while i <= k:
         K = V[i]
-        w1 = H.longestelement(K, 'p')
+        w1 = H.longestelement(K, lab='p')
         for s in (j for j in range(H.rank) if j not in K):
-            d = w1 * H.longestelement(K + [s], 'p')
-            L = sorted(H.convert(H.permgens[l]^d, 'pw')[0] for l in K)
+            d = w1 * H.longestelement(K + [s], lab='p')
+            L = sorted(H.convert(H.permgens[l]^d, 'w')[0] for l in K)
             if L not in V:
                 try:
                     return C.index(L)
@@ -66,30 +68,8 @@ def identifycoxclass(H, C, J):
                     k += 1
         i += 1
 
-def minlengthrep(W, w):
-    """
-    This returns an element of minimal length in the conjugacy class of w as a
-    permutation on the roots.
 
-    """
-    # Here we follow Algorithm H from pg. 83 of [GP00].
-    Y = {w}
-    X = set()
-    while Y:
-        y = next(iter(Y))
-        l = W.length(y, 'p')
-        X.add(y)
-        Y.remove(y)
-        for s in W.permgens:
-            z = y^s
-            lz = W.length(z, 'p')
-            if lz < l:
-                Y = {z}
-                X = set()
-                break
-            elif lz == l and not z in X:
-                Y.add(z)
-    return next(iter(X))
+
 
 
 
@@ -101,7 +81,7 @@ def minlengthrep(W, w):
 ###############################################################
 W = clp.CoxeterGroup("G", 2)
 
-G2reps = [W.convert(np.array(x), 'mp') for x in G2ctab.classreps]
+G2reps = [W.convert(np.array(x), 'p') for x in G2ctab.classreps]
 
 # We reconstruct the orbits of the Weyl group acting on the roots.
 o1 = [i for i in range(2*W.N) if W.orbitrepresentatives[i] == 0]
@@ -109,8 +89,8 @@ o2 = [i for i in range(2*W.N) if W.orbitrepresentatives[i] == 1]
 
 # Each class is uniquely determined by the pair of cycletypes of the
 # restricted permutation on each orbit.
-G2labs = [(clp.restrictedperm(w, o1).cycletype(True),
-           clp.restrictedperm(w, o2).cycletype(True)) for w in G2reps]
+G2labs = [(clp.restrictedperm(w, o1).cyclestructure,
+           clp.restrictedperm(w, o2).cyclestructure) for w in G2reps]
 
 # Check that each of these labels is unique.
 assert len(set(G2labs)) == len(G2labs)
@@ -171,8 +151,8 @@ for k, x in enumerate(G2carter):
 
     w = w1*w2
 
-    param = (clp.restrictedperm(w, o1).cycletype(True),
-             clp.restrictedperm(w, o2).cycletype(True))
+    param = (clp.restrictedperm(w, o1).cyclestructure,
+             clp.restrictedperm(w, o2).cyclestructure)
     j = G2labs.index(param)
 
     # Check the characteristic polynomials match.
@@ -181,6 +161,10 @@ for k, x in enumerate(G2carter):
 
 # Check we have a bijection between the labellings.
 assert len(set(G2classmatch)) == len(G2classmatch)
+
+# We now create the (param, label) pairs for the param dict.
+G2paramdict = [(G2labs[G2classmatch[i]], G2carter[i][0])
+                for i in range(len(G2carter))]
 
 # These are very good representatives from CHEVIE.
 G2vgwords = [
@@ -194,20 +178,23 @@ G2vgwords = [
 
 # Now sort the conjugacy classes based on their cuspidal label.
 G2coxclasses = list(clp.data.typ1G.coxeterclasses(list(range(W.rank))))
-tmp = [x[0] for x in G2coxclasses]
+G2coxclasses = [x[3] for x in G2coxclasses]
 G2sortedclasses = []
 
 for i, j in enumerate(G2classmatch):
     # Get a permutation rep of the GAP class.
-    w = W.convert(np.array(G2ctab.classreps[j]), 'mp')
+    w = W.convert(np.array(G2ctab.classreps[j]), 'p')
 
     # Get a minimal length element in the class and determine J(w_min).
     # We then determine the representative of the Coxeter class
     # containing J(w_min).
-    w_min = W.convert(minlengthrep(W, w), 'pw')
+    w_min = W.convert(clp.minlengthelms(W, w)[0], 'w')
     J = list(set(w_min))
-    a = identifycoxclass(W, tmp, J)
+    a = identifycoxclass(W, G2coxclasses, J)
     G2sortedclasses.append(((i, j), (a, len(w_min), G2vgwords[i])))
+
+    # Check that the given representative is very good.
+    assert clp.braid.isverygood(W, G2vgwords[i])
 
     # Check that the very good representative is of minimal length.
     assert len(w_min) == len(G2vgwords[i])
@@ -220,6 +207,7 @@ G2sortedclasses = [x[0] for x in G2sortedclasses]
 G2degb = [(G2ctab.irrchars[i][G2classmatch[0]], G2ctab.bvals[i])
           for i in range(len(G2reps))]
 
+# degree, a-value, b-value, Carter label.
 G2irrdata = [
 [1, 0, 0, ""  ],
 [1, 6, 6, ""  ],
@@ -267,16 +255,16 @@ G2sortedirrs = sorted(enumerate(G2irrmatch),
 ###############################################################
 W = clp.CoxeterGroup("F", 4)
 
-F4reps = [W.convert(np.array(x), 'mp') for x in F4ctab.classreps]
+F4reps = [W.convert(np.array(x), 'p') for x in F4ctab.classreps]
 
 # We reconstruct the orbits of the Weyl group acting on the roots.
 o1 = [i for i in range(2*W.N) if W.orbitrepresentatives[i] == 0]
 o2 = [i for i in range(2*W.N) if W.orbitrepresentatives[i] == 2]
 
-# Each class is uniquely determined by the pair of cycletypes of the
+# Each class is uniquely determined by the pair of cyclestructures of the
 # restricted permutation on each orbit.
-F4labs = [(clp.restrictedperm(w, o1).cycletype(True),
-           clp.restrictedperm(w, o2).cycletype(True)) for w in F4reps]
+F4labs = [(clp.restrictedperm(w, o1).cyclestructure,
+           clp.restrictedperm(w, o2).cyclestructure) for w in F4reps]
 
 # Check that each of these labels is unique.
 assert len(set(F4labs)) == len(F4labs)
@@ -369,14 +357,18 @@ for k, x in enumerate(F4carter):
 
     w = w1*w2
 
-    param = (clp.restrictedperm(w, o1).cycletype(True),
-             clp.restrictedperm(w, o2).cycletype(True))
+    param = (clp.restrictedperm(w, o1).cyclestructure,
+             clp.restrictedperm(w, o2).cyclestructure)
     j = F4labs.index(param)
     assert x[2] == F4ctab.classcharpols[j]
     F4classmatch.append(j)
 
 # Check we have a bijection between the labellings.
 assert len(set(F4classmatch)) == len(F4classmatch)
+
+# We now create the (param, label) pairs for the param dict.
+F4paramdict = [(F4labs[F4classmatch[i]], F4carter[i][0])
+                for i in range(len(F4carter))]
 
 # These are very good representatives from CHEVIE.
 F4vgwords = [
@@ -409,32 +401,35 @@ F4vgwords = [
 
 # We now check that these representatives genuinely belong to the matched class.
 for i, word in zip(F4classmatch, F4vgwords):
-    w = W.convert(word, 'wp')
-    param = (clp.restrictedperm(w, o1).cycletype(True),
-             clp.restrictedperm(w, o2).cycletype(True))
+    w = W.convert(word, 'p')
+    param = (clp.restrictedperm(w, o1).cyclestructure,
+             clp.restrictedperm(w, o2).cyclestructure)
     assert param == F4labs[i]
 
 # Now sort the conjugacy classes based on their cuspidal label.
 F4coxclasses = list(clp.data.typ1F.coxeterclasses(list(range(W.rank))))
-tmp = [x[0] for x in F4coxclasses]
+F4coxclasses = [x[3] for x in F4coxclasses]
 F4sortedclasses = []
 
 for i, j in enumerate(F4classmatch):
     # Get a permutation rep of the GAP class.
-    w = W.convert(np.array(F4ctab.classreps[j]), 'mp')
+    w = W.convert(np.array(F4ctab.classreps[j]), 'p')
 
     # Get a minimal length element in the class and determined J(w_min).
     # We then determine the representative of the Coxeter class
     # containing J(w_min).
-    w_min = W.convert(minlengthrep(W, w), 'pw')
+    w_min = W.convert(clp.minlengthelms(W, w)[0], 'w')
     J = list(set(w_min))
-    a = identifycoxclass(W, tmp, J)
+    a = identifycoxclass(W, F4coxclasses, J)
     F4sortedclasses.append(((i, j), (a, len(w_min), F4vgwords[i])))
+
+    # Check that the given representative is very good.
+    assert clp.braid.isverygood(W, F4vgwords[i])
 
     # Check that the very good representative is of minimal length.
     assert len(w_min) == len(F4vgwords[i])
 
-F4sortedclasses.sort(key = (lambda pair: pair[1]))
+F4sortedclasses.sort(key=(lambda pair: pair[1]))
 F4sortedclasses = [x[0] for x in F4sortedclasses]
 
 
@@ -446,6 +441,7 @@ ind_A0 = F4classmatch[[i for i, x in enumerate(F4carter) if x[0] == 'A0'][0]]
 F4degb = [(F4ctab.irrchars[i][ind_A0], F4ctab.bvals[i])
           for i in range(len(F4reps))]
 
+# degree, a-value, b-value, Carter label, Kondo label.
 F4irrdata = [
 [1,  0,  0 , "",   '_1'],
 [1,  4,  12, "''", '_2'],
@@ -540,9 +536,9 @@ F4sortedirrs = sorted(enumerate(F4irrmatch),
 ###############################################################
 W = clp.CoxeterGroup("E", 6)
 
-E6reps = [W.convert(np.array(x), 'mp') for x in E6ctab.classreps]
+E6reps = [W.convert(np.array(x), 'p') for x in E6ctab.classreps]
 
-E6labs = [w.cycletype(True) for w in E6reps]
+E6labs = [w.cyclestructure for w in E6reps]
 
 # Check that each of these labels is unique.
 assert len(set(E6labs)) == len(E6labs)
@@ -626,13 +622,17 @@ for k, x in enumerate(E6carter):
 
     w = w1*w2
     
-    param = w.cycletype(True)
+    param = w.cyclestructure
     j = E6labs.index(param)
     assert x[2] == E6ctab.classcharpols[j], x[0]
     E6classmatch.append(j)
 
 # Check we have a bijection between the labellings.
 assert len(set(E6classmatch)) == len(E6classmatch)
+
+# We now create the (param, label) pairs for the param dict.
+E6paramdict = [(E6labs[E6classmatch[i]], E6carter[i][0])
+               for i in range(len(E6carter))]
 
 # These are very good representatives from CHEVIE.
 E6vgwords = [
@@ -665,36 +665,40 @@ E6vgwords = [
 
 # We now check that these representatives genuinely belong to the matched class.
 for i, word in zip(E6classmatch, E6vgwords):
-    w = W.convert(word, 'wp')
-    assert w.cycletype(True) == E6labs[i]
+    w = W.convert(word, 'p')
+    assert w.cyclestructure == E6labs[i]
 
 # Now sort the conjugacy classes based on their cuspidal label.
 E6coxclasses = list(clp.data.typ1E.coxeterclasses(list(range(W.rank))))
-tmp = [x[0] for x in E6coxclasses]
+E6coxclasses = [x[3] for x in E6coxclasses]
 E6sortedclasses = []
 
 for i, j in enumerate(E6classmatch):
     # Get a permutation rep of the GAP class.
-    w = W.convert(np.array(E6ctab.classreps[j]), 'mp')
+    w = W.convert(np.array(E6ctab.classreps[j]), 'p')
 
     # Get a minimal length element in the class and determined J(w_min).
     # We then determine the representative of the Coxeter class
     # containing J(w_min).
-    w_min = W.convert(minlengthrep(W, w), 'pw')
+    w_min = W.convert(clp.minlengthelms(W, w)[0], 'w')
     J = list(set(w_min))
-    a = identifycoxclass(W, tmp, J)
+    a = identifycoxclass(W, E6coxclasses, J)
     E6sortedclasses.append(((i, j), (a, len(w_min), E6vgwords[i])))
+
+    # Check that the given representative is very good.
+    assert clp.braid.isverygood(W, E6vgwords[i])
 
     # Check that the very good representative is of minimal length.
     assert len(w_min) == len(E6vgwords[i])
 
-E6sortedclasses.sort(key = (lambda pair: pair[1]))
+E6sortedclasses.sort(key=operator.itemgetter(1))
 E6sortedclasses = [x[0] for x in E6sortedclasses]
 
 # Get the pairs consisting of the degree and b-value.
 E6degb = [(E6ctab.irrchars[i][ind_A0], E6ctab.bvals[i])
           for i in range(len(E6reps))]
 
+# degree, a-value, b-value, Frame label.
 E6irrdata = [
 [1,  0,  0,  '_p' ],
 [1,  36, 36, "_p'"],
@@ -743,12 +747,12 @@ E6sortedirrs = sorted(enumerate(E6irrmatch),
 ###############################################################
 W = clp.CoxeterGroup("E", 7)
 
-E7reps = [W.convert(np.array(x), 'mp') for x in E7ctab.classreps]
+E7reps = [W.convert(np.array(x), 'p') for x in E7ctab.classreps]
 
 # Each class is uniquely detetmined by the cycle type of w and w*w0.
 w0 = W.longestelement(lab='p')
-E7labs = [(w.cycletype(True),
-           (w*w0).cycletype(True)) for w in E7reps]
+E7labs = [(w.cyclestructure,
+           (w*w0).cyclestructure) for w in E7reps]
 
 # Check that each of these labels is unique.
 assert len(set(E7labs)) == len(E7labs)
@@ -876,13 +880,17 @@ for k, x in enumerate(E7carter):
 
     w = w1*w2
 
-    param = (w.cycletype(True), (w*w0).cycletype(True))
+    param = (w.cyclestructure, (w*w0).cyclestructure)
     j = E7labs.index(param)
     assert x[2] == E7ctab.classcharpols[j], x[0]
     E7classmatch.append(j)
 
 # Check we have a bijection between the labellings.
 assert len(set(E7classmatch)) == len(E7classmatch)
+
+# We now create the (param, label) pairs for the param dict.
+E7paramdict = [(E7labs[E7classmatch[i]], E7carter[i][0])
+               for i in range(len(E7carter))]
 
 # We need to make sure we got the prime labellings right. The two primed
 # classes can be distinguished by their class sizes. We record this
@@ -977,31 +985,34 @@ E7vgwords = [
 
 # We now check that these representatives genuinely belong to the matched class.
 for i, word in zip(E7classmatch, E7vgwords):
-    w = W.convert(word, 'wp')
-    param = (w.cycletype(True), (w*w0).cycletype(True))
+    w = W.convert(word, 'p')
+    param = (w.cyclestructure, (w*w0).cyclestructure)
     assert param == E7labs[i]
 
 # Now sort the conjugacy classes based on their cuspidal label.
 E7coxclasses = list(clp.data.typ1E.coxeterclasses(list(range(W.rank))))
-tmp = [x[0] for x in E7coxclasses]
+E7coxclasses = [x[3] for x in E7coxclasses]
 E7sortedclasses = []
 
 for i, j in enumerate(E7classmatch):
     # Get a permutation rep of the GAP class.
-    w = W.convert(np.array(E7ctab.classreps[j]), 'mp')
+    w = W.convert(np.array(E7ctab.classreps[j]), 'p')
 
     # Get a minimal length element in the class and determined J(w_min).
     # We then determine the representative of the Coxeter class
     # containing J(w_min).
-    w_min = W.convert(minlengthrep(W, w), 'pw')
+    w_min = W.convert(clp.minlengthelms(W, w)[0], 'w')
     J = list(set(w_min))
-    a = identifycoxclass(W, tmp, J)
+    a = identifycoxclass(W, E7coxclasses, J)
     E7sortedclasses.append(((i, j), (a, len(w_min), E7vgwords[i])))
+
+    # Check that the given representative is very good.
+    assert clp.braid.isverygood(W, E7vgwords[i])
 
     # Check that the very good representative is of minimal length.
     assert len(w_min) == len(E7vgwords[i])
 
-E7sortedclasses.sort(key = (lambda pair: pair[1]))
+E7sortedclasses.sort(key=operator.itemgetter(1))
 E7sortedclasses = [x[0] for x in E7sortedclasses]
 
 
@@ -1010,6 +1021,7 @@ E7sortedclasses = [x[0] for x in E7sortedclasses]
 E7degb = [(E7ctab.irrchars[i][ind_A0], E7ctab.bvals[i])
           for i in range(len(E7reps))]
 
+# degree, a-value, b-value, Frame label.
 E7irrdata = [
 [1,   0,  0,  '_a' ],
 [1,   63, 63, "_a'"],
@@ -1082,8 +1094,6 @@ assert len(set(E7irrmatch)) == len(E7irrmatch)
 tmp = [[E7ctab.irrchars[E7irrmatch[i]][E7classmatch[j]]
            for j in range(len(E7reps))] for i in range(len(E7reps))]
 
-assert tmp == clp.data.typ1E.chartable(7)
-
 # Sort the irreducible characters by degree and b-value.
 E7sortedirrs = sorted(enumerate(E7irrmatch),
                       key=(lambda x: [E7irrdata[x[0]][y] for y in [0, 2]]))
@@ -1099,11 +1109,11 @@ E7sortedirrs = sorted(enumerate(E7irrmatch),
 ###############################################################
 W = clp.CoxeterGroup("E", 8)
 
-E8reps = [W.convert(np.array(x), 'mp') for x in E8ctab.classreps]
+E8reps = [W.convert(np.array(x), 'p') for x in E8ctab.classreps]
 
 # Construct the longest element of the Weyl group.
 #w0 = W.convert(-np.identity(8, dtype='int'), 'mp')
-E8labs = [w.cycletype(True) for w in E8reps]
+E8labs = [w.cyclestructure for w in E8reps]
 
 # Check that each of these labels is unique.
 assert len(set(E8labs)) == len(E8labs)
@@ -1307,7 +1317,7 @@ for k, x in enumerate(E8carter):
 
     w = w1*w2
 
-    param = w.cycletype(True)
+    param = w.cyclestructure
     j = E8labs.index(param)
     assert x[2] == E8ctab.classcharpols[j], x[0]
     E8classmatch.append(j)
@@ -1334,6 +1344,10 @@ E8primetest = [
 for x in E8primetest:
     assert E8carter[x[0]][0] == x[1], (x[0], E8carter[x[0]][0], x[1])
     assert x[2] == W.size//E8ctab.cents[E8classmatch[x[0]]], x[1]
+
+# We now create the (param, label) pairs for the param dict.
+E8paramdict = [(E8labs[E8classmatch[i]], E8carter[i][0])
+               for i in range(len(E8carter))]
 
 # These are very good representatives taken from CHEVIE.
 E8vgwords = [
@@ -1483,30 +1497,33 @@ E8vgwords = [
 
 # We now check that these representatives genuinely belong to the matched class.
 for i, word in zip(E8classmatch, E8vgwords):
-    w = W.convert(word, 'wp')
-    assert w.cycletype(True) == E8labs[i]
+    w = W.convert(word, 'p')
+    assert w.cyclestructure == E8labs[i]
 
 # Now sort the conjugacy classes based on their cuspidal label.
 E8coxclasses = list(clp.data.typ1E.coxeterclasses(list(range(W.rank))))
-tmp = [x[0] for x in E8coxclasses]
+E8coxclasses = [x[3] for x in E8coxclasses]
 E8sortedclasses = []
 
 for i, j in enumerate(E8classmatch):
     # Get a permutation rep of the GAP class.
-    w = W.convert(np.array(E8ctab.classreps[j]), 'mp')
+    w = W.convert(np.array(E8ctab.classreps[j]), 'p')
 
     # Get a minimal length element in the class and determined J(w_min).
     # We then determine the representative of the Coxeter class
     # containing J(w_min).
-    w_min = W.convert(minlengthrep(W, w), 'pw')
+    w_min = W.convert(clp.minlengthelms(W, w)[0], 'w')
     J = list(set(w_min))
-    a = identifycoxclass(W, tmp, J)
+    a = identifycoxclass(W, E8coxclasses, J)
     E8sortedclasses.append(((i, j), (a, len(w_min), E8vgwords[i])))
+
+    # Check that the given representative is very good.
+    assert clp.braid.isverygood(W, E8vgwords[i])
 
     # Check that the very good representative is of minimal length.
     assert len(w_min) == len(E8vgwords[i])
 
-E8sortedclasses.sort(key = (lambda pair: pair[1]))
+E8sortedclasses.sort(key=operator.itemgetter(1))
 E8sortedclasses = [x[0] for x in E8sortedclasses]
 
 
@@ -1515,6 +1532,7 @@ E8sortedclasses = [x[0] for x in E8sortedclasses]
 E8degb = [(E8ctab.irrchars[i][ind_A0], E8ctab.bvals[i])
           for i in range(len(E8reps))]
 
+# degree, a-value, b-value, Frame label.
 E8irrdata = [
 [1,    0,   0,   '_x'  ],
 [1,    120, 120, "_x'" ],
@@ -1698,6 +1716,45 @@ writeclassdata("F4", F4clsdata)
 writeclassdata("E6", E6clsdata)
 writeclassdata("E7", E7clsdata)
 writeclassdata("E8", E8clsdata)
+
+# Write the conjugacy class parameter data to file.
+def writeclassparamdata(typ, params):
+    """
+    Writes a function to the corresponding data file returning the Coxeter
+    classes.
+
+    """
+    # Construct the TextWrapper class.
+    wrapper = textwrap.TextWrapper(initial_indent=" "*4,
+                                   subsequent_indent=" "*8,
+                                   width=78)
+
+    with open("../rawdata.py", 'a') as datafile:
+        datafile.write(
+            "{}classparams = {{\n".format(typ)
+        )
+
+        for para in params[:-1]:
+            s = '{}: "{}",'.format(para[0], para[1])
+            # Write out the list.
+            datafile.write("\n".join(wrapper.wrap(s) + [""]))
+
+        # Treat the last case differently.
+        para = params[-1]
+        s = '{}: "{}"'.format(para[0], para[1])
+        datafile.write("\n".join(wrapper.wrap(s) + [""]))
+        datafile.write("}\n\n")
+
+
+# Write a header to the section.
+with open("../rawdata.py", 'a') as datafile:
+    datafile.write(head_str.format("", "Conjugacy Class Parameters"))
+
+writeclassparamdata("G2", G2paramdict)
+writeclassparamdata("F4", F4paramdict)
+writeclassparamdata("E6", E6paramdict)
+writeclassparamdata("E7", E7paramdict)
+writeclassparamdata("E8", E8paramdict)
 
 # Write the irreducible character data to file.
 def writeirrdata(typ, irrs):

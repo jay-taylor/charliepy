@@ -2,7 +2,7 @@
 # Data for type 2F_4 Coxeter groups and reductive groups
 #
 
-def conjclassdata(ind, **kwargs):
+def conjclasses(ind, **kwargs):
     """
     Returns the conjugacy class data for the coset W.phi where W is an
     irreducible Weyl group of type D_n and phi is the unique graph automorphism

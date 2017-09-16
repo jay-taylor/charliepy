@@ -33,7 +33,7 @@ def coxeterclasses(W):
             w1 = W.longestelement(K, 'p')
             for s in (i for i in range(W.rank) if i not in K):
                 d = w1 * W.longestelement(K + [s], 'p')
-                L = sorted(W.convert(W.permgens[i]^d, 'pw')[0] for i in K)
+                L = sorted(W.convert(W.permgens[i]^d, 'w')[0] for i in K)
                 if L not in V:
                     V.append(L)
                     k += 1
@@ -45,40 +45,90 @@ def coxeterclasses(W):
 
     return coxclasses
 
+# This implementation of computing the order of the normaliser is
+# obviously not very efficient in the case of E8. However it completes
+# within a reasonable time, less than a couple of minutes on my box, so
+# we won't improve it as it is a one time computation.
 def normaliser(W, J):
     """
     This returns the index [N_W(W_J) : W_J] of the parabolic subgroup in its
     normaliser.
 
     """
-    # We start by adding to J those simple reflections which centralise J. The
-    # subgroup W_L is contained in the noramliser of W_J and to determine the
-    # size of [N_W(W_J) : W_J] we need only determine
+    # Let L be the simple reflections J together with all those reflections
+    # which centralise J. The parabolic subgroup W_L is contained in the
+    # normaliser of W_J and to determine the size of [N_W(W_J) : W_J] we need
+    # only determine
     #
     #     [N_W(W_J) : W_J] = [N_W(W_J) : W_L] . [W_L : W_J]
     #
-    L = J + [i for i in range(W.rank) if all(W.cartanmat[i,j] == 0 for j in J)]
+    
+    # Get the positive and negative roots corresponding to J.
+    Jposneg = set(J) | set(i + W.N for i in J)
+
+    # Get the indices of largest parabolic subgroup normalising J.
+    L = J + [i for i, x in enumerate(W.permgens)
+                   if i not in J and all(j^x in Jposneg for j in J)]
 
     M = clp.reflectionsubgroup(W, L).size
     M = M//clp.reflectionsubgroup(W, J).size
-    N = 1
+    N = 0
 
-    dL = W.longestelement(L, 'p') * W.longestelement(lab='p')
-    k, Y = W.length(dL, 'p'), {dL}
+    SdiffL = [i for i in range(W.rank) if i not in L]
 
     S = {W.permgens[i] for i in J}
 
-    # We use Algorithm C on pg. 46 of [GP00] to construct the right cosets of
-    # W_L in W and check which representatives normalise J. We treat the trivial
-    # subgroup as a special case. Note this algorithm misses the identity but
-    # we've already included it above.
-    while k:
-        # Count the number of elements of Y which normalise J.
-        N += len([x for x in Y if all(s^x in S for s in S)])
+    identity = clp.Perm(range(2*W.N))
 
-        # Replace Y by those of the next lowest length.
-        Y = {x*s for x in Y for s in W.permgens if W.length(x*s, 'p') < k}
-        k -= 1
+    # We construct distinguished right coset representatives for a maximal chain
+    # of parabolic subgroups
+    #
+    #   W_L = X_0 c X_1 c ... c X_k = W.
+    #
+    # From this all coset representatives can be constructed.
+    cosetreps = [None]*len(SdiffL)
+    for i in range(len(SdiffL)):
+        Y = {identity}
+        X = {identity}
+
+        # Get the generators for the larger parabolic subgroup X_{i+1}.
+        S = [(j, W.permgens[j]) for j in L + SdiffL[:i+1]]
+
+        # Indices for the generators of smaller parabolic X_i.
+        T = L + SdiffL[:i]
+
+        while Y:
+            Z = set()
+            for x in Y:
+                y = x**-1
+                for k, s in S:
+                    # l(xs_k) > l(x) iff alpha_k.y is positive.
+                    if k^y < W.N:
+                        z = x*s
+                        # l(s_jz) > l(z) iff alpha_j.z is positive.
+                        if all(j^z < W.N for j in T):
+                            Z.add(z)
+            X |= Z
+            Y = Z
+
+        cosetreps[i] = X
+
+    # This generates all elements from the coset reps.
+    def elms_gen(multd, pool):
+        if len(pool):
+            return elms_gen(
+                (x*y for x, y in itertools.product(multd, pool[0])), pool[1:])
+        else:
+            return iter(multd)
+
+    # We now loop through all distinguished elements in the coset W/W_L and see
+    # which ones normalise W_J.
+    if cosetreps:
+        for x in elms_gen(cosetreps[0], cosetreps[1:]):
+            if all(j^x in Jposneg for j in J):
+                N += 1
+    else:
+        return M
 
     return M*N
 
@@ -121,7 +171,8 @@ for orb in coxeterclasses(W):
 G2coxclasses.sort(key=(lambda pair: pair[1]))
 
 G2coxclasses = [
-    ('+'.join([typ[2] + typ[1] + str(typ[0]) for typ in x[1:-1]]), len(o), o[0])
+    ('+'.join([typ[2] + typ[1] + str(typ[0]) for typ in x[1:-1]]), len(o),
+        normaliser(W, o[0]), o[0])
         for o, x in G2coxclasses
 ]
 
@@ -167,8 +218,8 @@ for orb in coxeterclasses(W):
 F4coxclasses.sort(key=(lambda pair: pair[1]))
 
 F4coxclasses = [
-    ('+'.join([typ[2] + typ[1] + str(typ[0]) for typ in x[1:-1]]), len(o), o[0])
-        for o, x in F4coxclasses
+    ('+'.join([typ[2] + typ[1] + str(typ[0]) for typ in x[1:-1]]), len(o),
+        normaliser(W, o[0]), o[0]) for o, x in F4coxclasses
 ]
 
 # Check each Coxeter class is uniquely labelled.
@@ -213,7 +264,7 @@ for i, pair in enumerate(E6coxclasses):
     count = collections.Counter(lab_list)
     lab = "+".join(str(count[z]) + z if count[z] != 1 else z for z in unique)
 
-    tmp[i] = (lab, len(o), o[0])
+    tmp[i] = (lab, len(o), normaliser(W, o[0]), o[0])
 
 E6coxclasses = tmp
 
@@ -257,7 +308,7 @@ for i, pair in enumerate(E7coxclasses):
     count = collections.Counter(lab_list)
     lab = "+".join(str(count[z]) + z if count[z] != 1 else z for z in unique)
 
-    tmp[i] = [lab, len(o), o[0]]
+    tmp[i] = [lab, len(o), normaliser(W, o[0]), o[0]]
 
 E7coxclasses = tmp
 
@@ -266,7 +317,7 @@ for lab in ["3A1", "A3+A1", "A5"]:
     a, b = [i for i, x in enumerate(E7coxclasses) if x[0] == lab]
 
     # Make sure the smallest class comes first.
-    if E7coxclasses[a][2] > E7coxclasses[b][2]:
+    if E7coxclasses[a][1] > E7coxclasses[b][1]:
         E7coxclasses[a], E7coxclasses[b] = E7coxclasses[b], E7coxclasses[a]
 
     E7coxclasses[a][0] += "'"
@@ -317,7 +368,7 @@ for i, pair in enumerate(E8coxclasses):
     count = collections.Counter(lab_list)
     lab = "+".join(str(count[z]) + z if count[z] != 1 else z for z in unique)
 
-    tmp[i] = (lab, len(o), o[0])
+    tmp[i] = (lab, len(o), normaliser(W, o[0]), o[0])
 
 E8coxclasses = tmp
 

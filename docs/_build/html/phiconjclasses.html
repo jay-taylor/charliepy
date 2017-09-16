@@ -8,7 +8,7 @@
     
     <title>\(\phi\)-Conjugacy Classes &mdash; CharLiePy 0.1.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/charliepy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -46,7 +46,14 @@
         <li class="right" >
           <a href="cosets.html" title="3. Coxeter Cosets"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">CharLiePy Docs</a> &raquo;</li>
+<li>
+    <a href="index.html">CharLiePy Home</a>&nbsp;|
+</li>
+<li>
+    <a href="index.html">Documentation</a>
+     &raquo;
+</li>
+
           <li class="nav-item nav-item-1"><a href="cosets.html" accesskey="U">3. Coxeter Cosets</a> &raquo;</li> 
       </ul>
     </div>  
@@ -104,12 +111,12 @@ Coxeter coset.</p>
 <dl class="function">
 <dt id="charliepy.coxcos.conjugacyclasses">
 <code class="descclassname">charliepy.coxcos.</code><code class="descname">conjugacyclasses</code><span class="sig-paren">(</span><em>W</em><span class="sig-paren">)</span><a class="headerlink" href="#charliepy.coxcos.conjugacyclasses" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the conjugacy classes of a Coxeter group/coset.</p>
+<dd><p>Computes the conjugacy classes of a Coxeter coset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>W</strong> : <code class="xref py py-class docutils literal"><span class="pre">coxeter</span></code> or <code class="xref py py-class docutils literal"><span class="pre">coset</span></code></p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>W</strong> : <code class="xref py py-class docutils literal"><span class="pre">CoxeterCoset</span></code></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : dictionary</p>
@@ -142,26 +149,9 @@ sense of <a class="reference internal" href="bib.html#gm97" id="id1">[GM97]</a>.
 <code class="docutils literal"><span class="pre">conjugacyclasses</span></code> of W.</li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">coxeter</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-<span class="go">{&#39;classnames&#39;   : [(&#39;A_0&#39;,), (&#39;~A_1&#39;,), (&#39;A_1&#39;,), (&#39;G_2&#39;,),</span>
-<span class="go">                   (&#39;A_2&#39;,), (&#39;A_1+~A_1&#39;,)],</span>
-<span class="go"> &#39;classlengths&#39; : [1, 3, 3, 2, 2, 1],</span>
-<span class="go"> &#39;reps&#39;         : [[], [1], [0], [0, 1], [0, 1, 0, 1],</span>
-<span class="go">                   [0, 1, 0, 1, 0, 1]]}</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">coxeter</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span><span class="o">.</span><span class="n">cartantype</span>
-<span class="go">[[&#39;A&#39;, [0, 2]], [&#39;C&#39;, [3, 1]]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">W</span><span class="p">)[</span><span class="s1">&#39;reps&#39;</span><span class="p">]</span>
-<span class="go">[[], [3], [3, 1, 3, 1], [1], [3, 1], [0], [0, 3],</span>
-<span class="go"> [0, 3, 1, 3, 1], [0, 1], [0, 3, 1], [0, 2], [0, 2, 3],</span>
-<span class="go"> [0, 2, 3, 1, 3, 1], [0, 2, 1], [0, 2, 3, 1]]</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">coxeter</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Wphi</span> <span class="o">=</span> <span class="n">coset</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">phi</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">clp</span><span class="o">.</span><span class="n">CoxeterGroup</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Wphi</span> <span class="o">=</span> <span class="n">clp</span><span class="o">.</span><span class="n">CoxeterCoset</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Wphi</span><span class="o">.</span><span class="n">phitype</span>
 <span class="go">[[&#39;A&#39;, [0, 1, 2], (0, 2)]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">Wphi</span><span class="p">)</span>
@@ -180,9 +170,12 @@ sense of <a class="reference internal" href="bib.html#gm97" id="id1">[GM97]</a>.
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo.png" alt="Logo"/>
-            </a></p>
+
+<p class="logo"><a href="index.html">
+<img class="logo" src="_static/logo.png" alt="CharLiePy"/>
+</a></p>
+
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="cosets.html"
                         title="previous chapter">3. Coxeter Cosets</a></p>
@@ -228,14 +221,33 @@ sense of <a class="reference internal" href="bib.html#gm97" id="id1">[GM97]</a>.
         <li class="right" >
           <a href="cosets.html" title="3. Coxeter Cosets"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">CharLiePy Docs</a> &raquo;</li>
+<li>
+    <a href="index.html">CharLiePy Home</a>&nbsp;|
+</li>
+<li>
+    <a href="index.html">Documentation</a>
+     &raquo;
+</li>
+
           <li class="nav-item nav-item-1"><a href="cosets.html" >3. Coxeter Cosets</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Jay Taylor.
-      Last updated on Jan 27, 2016.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
-    </div>
+<div class="footer">
+<span class="left">
+
+Last updated on Apr 26, 2016.
+
+</span>
+<span class="right">
+    
+    &copy; Copyright 2016, Jay Taylor.
+    
+
+Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+1.3.5.&nbsp;&nbsp;
+
+</span>
+</div>
+
   </body>
 </html>

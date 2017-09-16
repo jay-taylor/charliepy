@@ -45,6 +45,9 @@ def degrees(n):
 def longestword(inds):
     return (inds[0::2] + inds[1::2])*len(inds)
 
+def maxparachain(inds):
+    return inds
+
 def conjclasses(ind, **kwargs):
     n = len(ind)
 
@@ -57,6 +60,7 @@ def conjclasses(ind, **kwargs):
         return typB.conjclasses(ind)
 
 # These are all identical to the type B case.
+wordtoclass = typB.wordtoclass
 conjclasses_min = typB.conjclasses_min
 irrchars = typB.irrchars
 chartable = typB.chartable

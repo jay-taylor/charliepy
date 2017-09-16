@@ -7,9 +7,7 @@
 
 from .. import utils
 from .. import permutat
-from . import __USE_C__
-if __USE_C__:
-    from . import _chartabs
+from . import _cdata
 
 import numpy as np
 from collections import OrderedDict
@@ -60,6 +58,9 @@ def longestword(inds):
         return (inds[0::2] + inds[1::2])*(n//2) + inds[0::2]
     else:
         return (inds[0::2] + inds[1::2])*(n//2)
+
+def maxparachain(inds):
+    return inds
 
 
 ########################################################################
@@ -161,18 +162,13 @@ def conjclasses_min(ind, **kwargs):
     return ((utils.intlisttostring(mu), centraliser(mu))
             for mu in _conjlabels(n+1))
 
-
-def wordtoclass(elm, inds, n):
+def wordtoclass(n, w):
     """
-    Takes a word in the standard generators and returns the parameter of its
-    conjugacy class.
+    Returns the name of the conjugacy class in the Weyl group of type A_n
+    containing the element w given as a word in the standard generators.
 
     """
-    p = permutat.Perm(range(n + 1))
-    for i in elm:
-        p *= (i, i + 1)
-    return utils.intlisttostring(p.cycletype(True))
-
+    return utils.intlisttostring(_cdata.wordtoclassA(n, w))
 
 
 ########################################################################
@@ -263,21 +259,19 @@ def chartable(r, **kwargs):
 
     # Define how to construct a column of the character table of S_(m+1) from
     # the column t of the character table of S_(k+1).
-    if __USE_C__:
-        charcol = _chartabs.charcolA
-    else:
-        def charcol(schm, t, k):
-            col = [None]*len(schm)
-            for ind, pi in enumerate(schm):
-                val = 0
-                for i in pi[k]:
-                    if i < 0:
-                        val -= t[-i-1]
-                    else:
-                        val += t[i-1]
-                col[ind] = val
+    charcol = _cdata.charcolA
+    #def charcol(schm, t, k):
+    #    col = [None]*len(schm)
+    #    for ind, pi in enumerate(schm):
+    #        val = 0
+    #        for i in pi[k]:
+    #            if i < 0:
+    #                val -= t[-i-1]
+    #            else:
+    #                val += t[i-1]
+    #        col[ind] = val
 
-            return col
+    #    return col
 
     # Construct all necessary columns.
     colsm = [[] for i in range(n)]

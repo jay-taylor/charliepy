@@ -20,9 +20,11 @@
 # the Dynkin diagram and whether we're dealing with the automorphism phi
 # or phi'.
 
+from . import rawdata as _rd
+from .. import permutat
 import numpy as np
 
-def conjclassdata(ind, **kwargs):
+def conjclasses(inds, **kwargs):
     """
     Returns the conjugacy class data for the coset W.phi where W is an
     irreducible Weyl group of type D_4 and phi is a graph automorphism of order
@@ -30,49 +32,26 @@ def conjclassdata(ind, **kwargs):
 
     """
     phi = kwargs['phi']
-    
-    # The first instance assumes we're dealing with the automorphism phi
-    # and the second case assumes we're dealing with the automorphism
-    # phi'. Passing from one case to the other is simply a matter of
-    # interchanging the roles of 1 and 3.
-    if phi[ind[0]] == ind[2]:
-        classes = (
-            ([0], 4, 'C3'), ([], 12, '~A2'), ([0, 2, 1, 0, 2, 1], 12, 'C3+A1'),
-            ([1], 4, '~A2+A1'), ([0, 1], 4, 'F4'),
-            ([0, 2, 1, 0, 2, 3, 1, 2], 24, '~A2+A2'),
-            ([0, 2, 1, 2], 24, 'F4(a1)')
-        )
+
+    if inds[0]^phi == inds[2]:
+        p = permutat.Perm([0, 1, 2, 3])
     else:
-        classes = (
-            ([0], 4, 'C3'), ([], 12, '~A2'), ([0, 3, 1, 0, 3, 1], 12, 'C3+A1'),
-            ([1], 4, '~A2+A1'), ([0, 1], 4, 'F4'),
-            ([0, 3, 1, 0, 3, 2, 1, 3], 24, '~A2+A2'),
-            ([0, 3, 1, 3], 24, 'F4(a1)')
-        )
+        p = permutat.Perm([0, 1, 3, 2])
 
-    return (([ind[j] for j in cls[0]], cls[1], cls[2]) for cls in classes)
-
-def conjclassdata_min(ind, **kwargs):
-    classes = (
-        (4, 'C3'), (12, '~A2'), (12, 'C3+A1'), (4, '~A2+A1'), (4, 'F4'),
-        (24, '~A2+A2'), (24, 'F4(a1)')
+    return (
+        (nam, cent, [inds[i^p] for i in rep])
+        for (nam, cent, rep) in _rd.D4_3conjclasses
     )
 
-    return (cls for cls in classes)
 
-def irrchardata(n, **kwargs):
-    charnames = (".4", ".1111", ".22", "11.2", "1.3", "1.111", "1.21")
-    return ((nam, None, None) for nam in charnames)
+def conjclasses_min(inds, **kwargs):
+    return (cls[:2] for cls in _rd.D4_3conjclasses)
+
+def irrchars(n, labels=(), **kwargs):
+    return _rd.D4_3irrchardata
 
 def chartable(n, **kwargs):
     # Here we use Lusztig's preferred extension. This is the unique
     # extension which is defined over the rationals.
-    return np.array([[  1, 1,  1,  1,  1,  1,  1 ],
-                     [ -1, 1,  1, -1,  1,  1,  1 ],
-                     [  0, 2,  2,  0, -1, -1, -1 ],
-                     [  0, 0,  0,  0, -1,  3,  3 ],
-                     [  1, 1, -1, -1,  0, -2,  2 ],
-                     [ -1, 1, -1,  1,  0, -2,  2 ],
-                     [  0, 2, -2,  0,  0,  2, -2 ]],
-                    dtype='int')
+    return _rd.D4_3chartable
 

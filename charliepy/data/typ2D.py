@@ -12,7 +12,7 @@ from . import typ1B
 
 import itertools
 
-def conjclassdata(ind, **kwargs):
+def conjclasses(ind, **kwargs):
     """
     Returns the conjugacy class data for the coset W.phi where W is an
     irreducible Weyl group of type D_n and phi is the unique graph automorphism
@@ -43,24 +43,24 @@ def conjclassdata(ind, **kwargs):
                 m += d
 
             yield (
-                word,
-                utils.centralisertuple(n, 2, mu)//2,
-                utils.parttupletostring(mu)
+                utils.parttupletostring(mu),
+                typ1B.centraliser(mu)//2,
+                word
             )
 
         else:
             continue
 
-def conjclassdata_min(ind, **kwargs):
+def conjclasses_min(ind, **kwargs):
     n = len(ind)
 
     for mu in typ1B._conjlabels(n):
         if len(mu[1]) % 2:
-            yield (typ1B.centraliser(mu)//2, utils.parttupletostring(mu))
+            yield (utils.parttupletostring(mu), typ1B.centraliser(mu)//2)
         else:
             continue
 
-def irrchardata(n, **kwargs):
+def irrchars(n, **kwargs):
     return ((utils.parttupletostring(x), None, None)
             for x in filter(testprefext, typ1B._charlabels(n)))
 
@@ -78,7 +78,6 @@ def chartable(n, **kwargs):
 #########################################
 ## Utility Functions
 ##
-
 def testprefext(bipart):
     """
     Returns True if bipart is a bipartition representing the preferred

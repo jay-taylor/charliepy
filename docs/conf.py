@@ -104,9 +104,9 @@ primary_domain = 'py'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'basic'
+#html_theme = 'basic'
 #html_theme = 'sphinx_rtd_theme'
-#html_theme = 'charliepy'
+html_theme = 'charliepy'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -114,7 +114,7 @@ html_theme = 'basic'
 #html_theme_options = {"sticky_navigation" : True}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = ['_themes']
+html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

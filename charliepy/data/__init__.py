@@ -1,9 +1,3 @@
-try:
-    from . import _chartabs
-    __USE_C__ = True
-except ImportError:
-    __USE_C__ = False
-
 from . import typ1A
 from . import typ1B
 from . import typ1BC
