@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'CharLiePy'
-copyright = u'2016, Jay Taylor'
+copyright = u'2018, Jay Taylor'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -106,7 +106,7 @@ primary_domain = 'py'
 # a list of builtin themes.
 #html_theme = 'basic'
 #html_theme = 'sphinx_rtd_theme'
-html_theme = 'charliepy'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -264,3 +264,6 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# Stops warnings for members from numpydoc
+numpydoc_show_class_members = False

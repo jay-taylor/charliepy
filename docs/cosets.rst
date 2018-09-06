@@ -1,5 +1,5 @@
 .. include:: global.rst
-.. module:: charliepy.coxcos
+.. module:: charliepy.coset
 
 Coxeter Cosets
 ==============
@@ -26,7 +26,7 @@ to representation theory is the coset
 which we call a *Coxeter coset*. Below we will identify `W` with its
 natural image `\{(w,1) \mid w \in W\}` in `\widetilde{W}`.
 
-In PyCox we have implemented general algorithms for working with Coxeter
+In CharLiePy we have implemented general algorithms for working with Coxeter
 cosets, which we describe in this section. Mainly these algorithms deal with
 conjugacy classes and irreducible characters.
 
@@ -35,14 +35,9 @@ conjugacy classes and irreducible characters.
     For the moment these functions only support the case where :math:`W` is
     a finite Coxeter group.
 
-The following class implements Coxeter cosets in PyCox.
+The following class implements Coxeter cosets in CharLiePy.
 
 .. autoclass:: CoxeterCoset
 
-Other topics of interest include:
-
-.. toctree::
-
-    phiconjclasses
 
 
