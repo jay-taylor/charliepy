@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Conjugacy Classes &mdash; CharLiePy 0.1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/icon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. Data Book" href="databook/databook.html" />
+    <link rel="prev" title="1. Coxeter Cosets" href="cosets.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CharLiePy
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Referencing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bib.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Coxeter Groups and Cosets</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cosets.html">1. Coxeter Cosets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Conjugacy Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="databook/databook.html">3. Data Book</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CharLiePy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>2. Conjugacy Classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/conjclasses.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="conjugacy-classes">
+<h1>2. Conjugacy Classes<a class="headerlink" href="#conjugacy-classes" title="Permalink to this headline">¶</a></h1>
+<p>Let us recall that the automorphism <span class="math notranslate nohighlight">\(\phi\)</span> induces a natural equivalence
+relation on the group <span class="math notranslate nohighlight">\(W\)</span>, which we call <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy. In
+particular, we say two elements <span class="math notranslate nohighlight">\(x,y \in W\)</span> are <span class="math notranslate nohighlight">\(\phi\)</span>-conjugate
+if there exists an element <span class="math notranslate nohighlight">\(z \in W\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[x = z^{-1}y\phi(z).\]</div>
+<p>The equivalence classes under this relation are known as the
+<span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy classes of <span class="math notranslate nohighlight">\(W\)</span>, which we denote by <span class="math notranslate nohighlight">\(H^1(\phi,W)\)</span>.</p>
+<div class="admonition-definition admonition">
+<p class="first admonition-title">Definition</p>
+<p>We say <span class="math notranslate nohighlight">\(C \subset W\phi\)</span> is a <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy class if any
+one of the following equivalent conditions is satisfied:</p>
+<ul class="last simple">
+<li><span class="math notranslate nohighlight">\(C\)</span> is a <span class="math notranslate nohighlight">\(W\)</span>-orbit under the natural conjugation action of <span class="math notranslate nohighlight">\(W\)</span> on
+<span class="math notranslate nohighlight">\(W\phi\)</span>.</li>
+<li><span class="math notranslate nohighlight">\(C\)</span> is a conjugacy class of <span class="math notranslate nohighlight">\(\widetilde{W}\)</span> contained in the
+coset <span class="math notranslate nohighlight">\(W\phi\)</span>.</li>
+<li>the set <span class="math notranslate nohighlight">\(\{w \in W \mid (w, \phi) \in C\}\)</span> is a <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy
+class of <span class="math notranslate nohighlight">\(W\)</span>.</li>
+</ul>
+</div>
+<p>We now consider how we may reduce the problem of determining <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy
+classes to the case where <span class="math notranslate nohighlight">\(W\)</span> is irreducible. First let us write <span class="math notranslate nohighlight">\(W\)</span> as a
+direct product <span class="math notranslate nohighlight">\(W^{(1)} \times \cdots \times W^{(r)}\)</span> such that each <span class="math notranslate nohighlight">\(W^{(i)}\)</span>
+is an orbit of <span class="math notranslate nohighlight">\(\phi\)</span> acting on the irreducible factors of <span class="math notranslate nohighlight">\(W\)</span>. We will denote
+by <span class="math notranslate nohighlight">\(\phi^{(i)}\)</span> the restriction of <span class="math notranslate nohighlight">\(\phi\)</span> to the orbit <span class="math notranslate nohighlight">\(W^{(i)}\)</span> then the
+following is obvious</p>
+<div class="admonition-lemma admonition">
+<p class="first admonition-title">Lemma</p>
+<p>The natural product map</p>
+<div class="math notranslate nohighlight">
+\begin{align*}
+W^{(1)} \times \cdots \times W^{(r)} &amp;\to W\\
+(w_1,\dots,w_r) &amp;\mapsto w_1\cdots w_r
+\end{align*}</div><p>induces a bijection</p>
+<div class="last math notranslate nohighlight">
+\[H^1(\phi^{(1)},W^{(1)}) \times \cdots H^1(\phi^{(r)},W^{(r)}) \to
+H^1(\phi, W)\]</div>
+</div>
+<p>In other words <span class="math notranslate nohighlight">\(W^{(i)} = W^{(i)}_1 \times \cdots
+\times W^{(i)}_{m_i}\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span> cyclically permutes the factors <span class="math notranslate nohighlight">\(W^{(i)}_j\)</span>.</p>
+<p>The following function will produce the <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy classes of any
+Coxeter coset.</p>
+<dl class="function">
+<dt id="charliepy.conjclass.conjugacyclasses">
+<code class="descclassname">charliepy.conjclass.</code><code class="descname">conjugacyclasses</code><span class="sig-paren">(</span><em>W</em><span class="sig-paren">)</span><a class="headerlink" href="#charliepy.conjclass.conjugacyclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the conjugacy classes of a Coxeter group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>W</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">coxeter.CoxeterGroup</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">coset.CoxeterCoset</span></code></span></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Each entry of the list is an instance of :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>ConjugacyClass’
+which contains relevant information concerning the class.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>For the conventions concerning the raw data for each
+irreducible type see the databook.</li>
+<li>For a coset this computes the phi-conjugacy classes of the
+coset.</li>
+<li>For a group the representatives are <em>very good</em> in the
+sense of <a class="reference internal" href="bib.html#gm97" id="id3">[GM97]</a>.</li>
+<li>Once computed the classes are stored as the atribute
+<code class="docutils literal notranslate"><span class="pre">conjugacyclasses</span></code> of W.</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">coxeter</span><span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">{&#39;classnames&#39;   : [(&#39;A_0&#39;,), (&#39;~A_1&#39;,), (&#39;A_1&#39;,), (&#39;G_2&#39;,),</span>
+<span class="go">                   (&#39;A_2&#39;,), (&#39;A_1+~A_1&#39;,)],</span>
+<span class="go"> &#39;classlengths&#39; : [1, 3, 3, 2, 2, 1],</span>
+<span class="go"> &#39;reps&#39;         : [[], [1], [0], [0, 1], [0, 1, 0, 1],</span>
+<span class="go">                   [0, 1, 0, 1, 0, 1]]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span> <span class="o">=</span> <span class="n">coxeter</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">],[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">W</span><span class="o">.</span><span class="n">cartantype</span>
+<span class="go">[[&#39;A&#39;, [0, 2]], [&#39;C&#39;, [3, 1]]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conjugacyclasses</span><span class="p">(</span><span class="n">W</span><span class="p">)[</span><span class="s1">&#39;reps&#39;</span><span class="p">]</span>
+<span class="go">[[], [3], [3, 1, 3, 1], [1], [3, 1], [0], [0, 3],</span>
+<span class="go"> [0, 3, 1, 3, 1], [0, 1], [0, 3, 1], [0, 2], [0, 2, 3],</span>
+<span class="go"> [0, 2, 3, 1, 3, 1], [0, 2, 1], [0, 2, 3, 1]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="databook/databook.html" class="btn btn-neutral float-right" title="3. Data Book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cosets.html" class="btn btn-neutral" title="1. Coxeter Cosets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jay Taylor.
+      Last updated on Sep 05, 2018.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.2. Type \({}^2\mathrm{A}_n\) &mdash; CharLiePy 0.1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/icon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="3.1. Type \(\mathrm{A}_n\)" href="typ1A.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CharLiePy
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Referencing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../bib.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Coxeter Groups and Cosets</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../cosets.html">1. Coxeter Cosets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conjclasses.html">2. Conjugacy Classes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="databook.html">3. Data Book</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="typ1A.html">3.1. Type <span class="math notranslate nohighlight">\(\mathrm{A}_n\)</span></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.2. Type <span class="math notranslate nohighlight">\({}^2\mathrm{A}_n\)</span></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#coxeter-coset">3.2.1. Coxeter Coset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conjugacy-classes">3.2.2. <span class="math notranslate nohighlight">\(\phi\)</span>-Conjugacy Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#irreducible-characters">3.2.3. Irreducible Characters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CharLiePy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="databook.html">3. Data Book</a> &raquo;</li>
+        
+      <li>3.2. Type <span class="math notranslate nohighlight">\({}^2\mathrm{A}_n\)</span></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/databook/typ2A.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="type">
+<h1>3.2. Type <span class="math notranslate nohighlight">\({}^2\mathrm{A}_n\)</span><a class="headerlink" href="#type" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="coxeter-coset">
+<h2>3.2.1. Coxeter Coset<a class="headerlink" href="#coxeter-coset" title="Permalink to this headline">¶</a></h2>
+<p>There is a unique non-trivial automorphism <span class="math notranslate nohighlight">\(\phi : W \to W\)</span> stabilising the set
+of Coxeter generators <span class="math notranslate nohighlight">\(\mathbb{S}\)</span>. It may be realised as conjugation by the
+longest element <span class="math notranslate nohighlight">\(w_0 \in W\)</span>.</p>
+</div>
+<div class="section" id="conjugacy-classes">
+<h2>3.2.2. <span class="math notranslate nohighlight">\(\phi\)</span>-Conjugacy Classes<a class="headerlink" href="#conjugacy-classes" title="Permalink to this headline">¶</a></h2>
+<p>As <span class="math notranslate nohighlight">\(\phi\)</span> can be realised as an inner automorphism the <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy classes
+of <span class="math notranslate nohighlight">\(W\)</span> are simply the conjugacy classes of <span class="math notranslate nohighlight">\(W\)</span>. In particular, the map <span class="math notranslate nohighlight">\(w
+\mapsto ww_0\)</span> defines a bijection between the conjugacy classes and
+<span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy classes of <span class="math notranslate nohighlight">\(W\)</span> (see 2.9 of <a class="reference internal" href="../bib.html#gkp00" id="id1">[GKP00]</a>). The map</p>
+<div class="math notranslate nohighlight">
+\[\lambda \mapsto w_{\lambda} \mapsto w_{\lambda}w_0\]</div>
+<p>gives a bijection between the partitions of <span class="math notranslate nohighlight">\(n+1\)</span> and the <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy
+classes of <span class="math notranslate nohighlight">\(W\)</span>. Here <span class="math notranslate nohighlight">\(w_{\lambda}\)</span> is as in <a class="reference internal" href="typ1A.html#typ-1a-coxeter-conj-classes"><span class="std std-ref">Conjugacy Classes</span></a>.</p>
+<p>To construct minimal length representatives of the <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy classes we
+will need to work in the symmetric group <span class="math notranslate nohighlight">\(\mathfrak{S}_{n+1}\)</span>. Let <span class="math notranslate nohighlight">\(\lambda\)</span> be
+a <a class="reference internal" href="../glossary.html#term-partition"><span class="xref std std-term">partition</span></a> of <span class="math notranslate nohighlight">\(n+1\)</span>. We will denote by <span class="math notranslate nohighlight">\(\mu = (\mu_1,\dots,\mu_r)\)</span> a
+<em>maximal composition</em> obtained from <span class="math notranslate nohighlight">\(\lambda\)</span> by rearranging the entries. In
+other words, there exists <span class="math notranslate nohighlight">\(k\)</span> <span class="math notranslate nohighlight">\((0 \leqslant k \leqslant r)\)</span> such that
+<span class="math notranslate nohighlight">\(\mu_1,\dots,\mu_k\)</span> are even numbers (in any order) and <span class="math notranslate nohighlight">\(\mu_{k+1},\dots,\mu_r\)</span>
+are odd numbers such that <span class="math notranslate nohighlight">\(\mu_{k+1} \geqslant \cdots \geqslant \mu_r\)</span>.</p>
+<p>Now, to <span class="math notranslate nohighlight">\(\mu\)</span> we define an element <span class="math notranslate nohighlight">\(\sigma_{\mu} \in \mathfrak{S}_{n+1}\)</span> as
+follows. Consider the list <span class="math notranslate nohighlight">\((a_1,\dots,a_{n+1})\)</span> with <span class="math notranslate nohighlight">\(a_{2i-1} = i\)</span> and
+<span class="math notranslate nohighlight">\(a_{2i} = n+1 - (i-1)\)</span> for all <span class="math notranslate nohighlight">\(1 \leqslant i \leqslant n+1\)</span> then we set</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{\mu} =
+\sigma_{\mu_1}\sigma_{\mu_2}\cdots\sigma_{\mu_r}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma_{\mu_i}\)</span> is the <span class="math notranslate nohighlight">\(\mu_i\)</span>-cycle given by</p>
+<div class="math notranslate nohighlight">
+\[\sigma_{\mu_i} = (a_{\mu_1+\cdots+\mu_{i-1}+1},
+a_{\mu_1+\cdots+\mu_{i-1}+2},\dots,
+a_{\mu_1+\cdots+\mu_{i-1}+\mu_i}).\]</div>
+<p>By Theorem 3.3 of <a class="reference internal" href="../bib.html#gkp00" id="id2">[GKP00]</a> we have <span class="math notranslate nohighlight">\(\sigma_{\mu}w_0\)</span> is an element of
+minimal length in its <span class="math notranslate nohighlight">\(\phi\)</span>-conjugacy class. From this we obtain a reduced
+expression for this element by applying Algorithm A from pg. 9 of <a class="reference internal" href="../bib.html#gp00" id="id3">[GP00]</a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It is an open problem to determine whether these minimal length
+representatives are good in the sense of Definition 5.3 of <a class="reference internal" href="../bib.html#gkp00" id="id4">[GKP00]</a>.</p>
+</div>
+</div>
+<div class="section" id="irreducible-characters">
+<h2>3.2.3. Irreducible Characters<a class="headerlink" href="#irreducible-characters" title="Permalink to this headline">¶</a></h2>
+<p>As <span class="math notranslate nohighlight">\(\phi\)</span> can be realised as an inner automorphism we have all irreducible
+characters of <span class="math notranslate nohighlight">\(W\)</span> are <span class="math notranslate nohighlight">\(\phi\)</span>-stable. Thus the irreducible characters of the
+coset <span class="math notranslate nohighlight">\(W\phi\)</span> are labelled by the partitions of <span class="math notranslate nohighlight">\(n+1\)</span>. Each such irreducible
+character is obtained by restricting an extension <span class="math notranslate nohighlight">\(\tilde{\chi}_{\lambda}\)</span>
+of <span class="math notranslate nohighlight">\(\widetilde{W} = W \rtimes \langle \phi \rangle\)</span> to the coset <span class="math notranslate nohighlight">\(W\phi\)</span>. Here
+we choose Lusztig’s <a class="reference internal" href="../glossary.html#term-preferred-extension"><span class="xref std std-term">preferred extension</span></a>. In particular, if <span class="math notranslate nohighlight">\(E\)</span> is the
+simple module affording <span class="math notranslate nohighlight">\(\chi_{\lambda}\)</span> then <span class="math notranslate nohighlight">\(\phi\)</span> acts on <span class="math notranslate nohighlight">\(E\)</span> as
+<span class="math notranslate nohighlight">\((-1)^{a_{\lambda}}w_0\)</span> where <span class="math notranslate nohighlight">\(a_{\lambda}\)</span> is the a-invariant of
+<span class="math notranslate nohighlight">\(\chi_{\lambda}\)</span>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="typ1A.html" class="btn btn-neutral" title="3.1. Type \(\mathrm{A}_n\)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jay Taylor.
+      Last updated on Sep 05, 2018.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
