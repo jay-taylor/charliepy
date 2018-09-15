@@ -561,10 +561,9 @@ class CoxeterGroup:
 
         """
         if J is None:
-            J = list(range(self.rank))
-            pgens = self.permgens
+            pgens = list(enumerate(self.permgens))
         else:
-            pgens = [self.permgens[i] for i in J]
+            pgens = [(i, self.permgens[i]) for i in J]
 
         N = self.N
 
@@ -574,7 +573,7 @@ class CoxeterGroup:
             flag = True
             while flag:
                 flag = False
-                for i, s in enumerate(pgens):
+                for i, s in pgens:
                     if i^w0 < N:
                         flag = True
                         w0 = s*w0
@@ -588,7 +587,7 @@ class CoxeterGroup:
             flag = True
             while flag:
                 flag = False
-                for i, s in enumerate(pgens):
+                for i, s in pgens:
                     if i^w0 < N:
                         flag = True
                         w0 = s*w0
