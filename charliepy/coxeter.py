@@ -132,7 +132,7 @@ class CoxeterGroup:
         # ith column of the identity matrix. The permutations act on
         # list(range(len(self.roots))) from the left.
         self.matgens = [None]*self.rank
-        self.permgens = [None]*self.rank
+        self.reflections = [None]*self.N
 
         for i in range(self.rank):
             mat = np.identity(self.rank, dtype='int')
@@ -141,15 +141,24 @@ class CoxeterGroup:
 
             # If alpha = sum_i a_i*alpha_i where alpha_i is a simple
             # root then we have alpha.s_j = sum_i a_i*(alpha_i.s_j).
-            self.permgens[i] = permutat.Perm(
+            self.reflections[i] = permutat.Perm(
                 [self.roots.index(tuple(np.dot(mat.T, alpha).tolist()))
                  for alpha in self.roots]
             )
+
+        # Generating reflections which we just calculated
+        simplereflections = self.reflections[:self.rank]
 
         # We now compute for each root the lexicographically smallest
         # simple root which is contained in its W-orbit.
         reps = [None]*len(self.roots)
         self._schreier = dict()
+
+        def pos(k):
+            if k < self.N:
+                return k
+            else:
+                return k - self.N
 
         # Construct the orbit of the ith simple root. This is a basic
         # orbit computation algorithm. We simply keep applying
@@ -167,12 +176,13 @@ class CoxeterGroup:
             orb = [i]
             sch[i] = -1
             for item in orb:
-                for k, p in enumerate(self.permgens):
+                for k, p in enumerate(simplereflections):
                     j = item^p
                     if reps[j] is None:
                         reps[j] = i
                         orb.append(j)
                         sch[j] = k
+                        self.reflections[pos(j)] = self.reflections[pos(item)]^p
             self._schreier[i] = tuple(sch)
 
         self.orbitrepresentatives = reps
@@ -336,7 +346,7 @@ class CoxeterGroup:
                 X = {identity}
 
                 # Get the generators for the larger parabolic subgroup X_{i+1}.
-                S = [(j, self.permgens[j]) for j in pinds[:i+1]]
+                S = [(j, self.reflections[j]) for j in pinds[:i+1]]
 
                 # Indices for the generators of smaller parabolic X_i.
                 T = pinds[:i]
@@ -389,7 +399,7 @@ class CoxeterGroup:
                     try:
                         i = next(j for j in range(self.rank) if j^elm >= self.N)
                         word.append(i)
-                        elm = self.permgens[i]*elm
+                        elm = self.reflections[i]*elm
                     except StopIteration:
                         break
 
@@ -409,7 +419,7 @@ class CoxeterGroup:
             if lab == 'p': # word -> perm.
                 perm = permutat.Perm(range(2*self.N))
                 for i in w:
-                    perm *= self.permgens[i]
+                    perm *= self.reflections[i]
 
                 return perm
 
@@ -425,7 +435,7 @@ class CoxeterGroup:
             if lab == 'c': # word -> coxelm
                 elm = permutat.Perm(range(len(self.roots)))
                 for i in w:
-                    elm *= self.permgens[i]
+                    elm *= self.reflections[i]
                 return tuple([i^elm for i in range(self.rank)])
 
         if isinstance(w, tuple):
@@ -561,10 +571,9 @@ class CoxeterGroup:
 
         """
         if J is None:
-            pgens = list(enumerate(self.permgens))
-        else:
-            pgens = [(i, self.permgens[i]) for i in J]
-
+            J = range(self.rank)
+        pgens = [(i, self.reflections[i]) for i in J]
+        
         N = self.N
 
         if lab == 'w':
@@ -677,42 +686,45 @@ class CoxeterGroup:
                 inds = [self.embeddings[parent][i] for i in inds]
             utils.getmodule(typ).diagram(inds)
 
-    def reflection(self, i):
-        """
-        Returns the reflection of the ith root as a permutation.
+    # This shouldn't be needed anymore. All reflections are computed on
+    # initialisation of the group.
+    #def reflection(self, i):
+    #    """
+    #    Returns the reflection of the ith root as a permutation.
 
-        """
-        # Assume alpha_j is the simple root representative for the
-        # W-orbit containing alpha_i. We first get the Schreier vector
-        # for alpha_j and then use a standard algorithm to determine an
-        # element g in W such that alpha_i = alpha_j.g. The reflection of
-        # alpha_i is then simply
-        #
-        #           (s_j)^g = g**(-1) * s_j * g,
-        #
-        # where s_j is the simple reflection of alpha_j.
-        if i < self.rank:
-            return self.permgens[i]
+    #    """
+    #    # Assume alpha_j is the simple root representative for the
+    #    # W-orbit containing alpha_i. We first get the Schreier vector
+    #    # for alpha_j and then use a standard algorithm to determine an
+    #    # element g in W such that alpha_i = alpha_j.g. The reflection of
+    #    # alpha_i is then simply
+    #    #
+    #    #           (s_j)^g = g**(-1) * s_j * g,
+    #    #
+    #    # where s_j is the simple reflection of alpha_j.
 
-        j = self.orbitrepresentatives[i]
-        vect = self._schreier[j]
-        g = permutat.Perm(range(len(self.roots)))
-        k = vect[i]
+    #    if i < self.rank:
+    #        return self.reflections[i]
 
-        while k != -1:
-            # Assume alpha_i is the current root we're considering and
-            # vect[i] = k, then we have k is the index of a simple root
-            # and moreover that 
-            #
-            #       alpha_i = (alpha_i.s_k).s_k 
-            #
-            # because the generators are involutions. Continuing in this
-            # way we obtain g.
-            g = self.permgens[k]*g
-            i ^= self.permgens[k]
-            k = vect[i]
+    #    j = self.orbitrepresentatives[i]
+    #    vect = self._schreier[j]
+    #    g = permutat.Perm(range(len(self.roots)))
+    #    k = vect[i]
 
-        return self.permgens[j]^g
+    #    while k != -1:
+    #        # Assume alpha_i is the current root we're considering and
+    #        # vect[i] = k, then we have k is the index of a simple root
+    #        # and moreover that 
+    #        #
+    #        #       alpha_i = (alpha_i.s_k).s_k 
+    #        #
+    #        # because the generators are involutions. Continuing in this
+    #        # way we obtain g.
+    #        g = self.reflections[k]*g
+    #        i ^= self.reflections[k]
+    #        k = vect[i]
+
+    #    return self.reflections[j]^g
 
     def braid(self, w):
         """
@@ -763,7 +775,7 @@ def reflectionsubgroup(W, J):
     # W' is then given by all those t in T' such that N(t) = {t}.
 
     # First get all the roots and reflections of W'.
-    reflsJ = [W.reflection(i) for i in J]
+    reflsJ = [W.reflections[i] for i in J]
     rootsJ = J[:]
     seen = set(rootsJ)
     for i in rootsJ:
@@ -772,7 +784,7 @@ def reflectionsubgroup(W, J):
             if not j in seen:
                 rootsJ.append(j)
                 seen.add(j)
-                reflsJ.append(W.reflection(j))
+                reflsJ.append(W.reflections[j])
 
     simples = [rootsJ[i]
         for i, r in enumerate(reflsJ)

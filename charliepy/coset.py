@@ -1,6 +1,7 @@
 from . import permutat
 from . import utils
 import weakref
+import collections
 
 import numpy as np
 
@@ -62,9 +63,18 @@ class CoxeterCoset:
         # Get phi as a full permutation on the roots.
         posroots = W.roots[:W.N]
         try:
-            pperm = [posroots.index(phi.permute(x)) for x in posroots]
+            pperm = [None]*W.N
+            for j, r in enumerate(posroots):
+                u = W.orbitrepresentatives[j]
+                v = W.orbitrepresentatives[u^phi]
+                if W.symform[u] <= W.symform[v]:
+                    t = tuple(W.symform[i]*r[i] for i in phi)
+                    pperm[j] = posroots.index(t)
+                else:
+                    t = tuple((W.symform[i]*r[i])//W.symform[u] for i in phi)
+                    pperm[j] = posroots.index(t)
         except IndexError:
-            raise ValueError("phi must preserve the positive roots")
+            raise ValueError("phi must preserve the reflections")
         pperm.extend([x + W.N for x in pperm])
         phi = permutat.Perm(pperm)
         self.phi = phi
